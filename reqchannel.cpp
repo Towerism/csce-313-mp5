@@ -1,5 +1,5 @@
 /* 
-    File: requestchannel.C
+    File: requestchannel.cpp
 
     Author: R. Bettati
             Department of Computer Science
@@ -30,7 +30,7 @@
 
 #include <errno.h>
 
-#include "reqchannel.H"
+#include "reqchannel.h"
 
 using namespace std;
 

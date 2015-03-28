@@ -1,5 +1,5 @@
 /*
-    File: reqchannel.H
+    File: reqchannel.h
 
     Author: R. Bettati
             Department of Computer Science

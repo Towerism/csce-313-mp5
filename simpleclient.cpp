@@ -1,5 +1,5 @@
 /* 
-    File: simpleclient.C
+    File: simpleclient.cpp
 
     Author: R. Bettati
             Department of Computer Science
@@ -28,7 +28,7 @@
 #include <errno.h>
 #include <unistd.h>
 
-#include "reqchannel.H"
+#include "reqchannel.h"
 
 using namespace std;
 

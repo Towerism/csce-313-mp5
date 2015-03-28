@@ -1,5 +1,5 @@
 /* 
-    File: semaphore.H
+    File: semaphore.h
 
     Author: R. Bettati
             Department of Computer Science

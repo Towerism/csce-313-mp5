@@ -1,5 +1,5 @@
 /* 
-    File: dataserver.C
+    File: dataserver.cpp
 
     Author: R. Bettati
             Department of Computer Science
@@ -31,7 +31,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include "reqchannel.H"
+#include "reqchannel.h"
 
 using namespace std;
 
