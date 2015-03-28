@@ -24,3 +24,4 @@ cd bin
 make test
 ./test_suite
 ```
+NOTE: Google test must be installed or the test suite will not compile.
