@@ -9,7 +9,7 @@
 
 # Executables
 mp4
-test-suite
+test_suite
 
 # CMake
 CMakefiles
