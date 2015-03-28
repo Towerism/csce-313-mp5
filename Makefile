@@ -8,6 +8,6 @@ generate:
 mp4:
 	cd bin && $(MAKE) -s mp4
 test:
-	cd bin && $(MAKE) -s bin test_suite
+	cd bin && $(MAKE) -s test_suite
 clean:
 	cd bin && $(MAKE) -s clean
