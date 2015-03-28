@@ -6,8 +6,8 @@ all: default test
 generate:
 	cd bin && cmake ../
 mp4:
-	cd bin && $(MAKE) -s mp4 && mv bin/mp4 ../
+	cd bin && $(MAKE) -s mp4
 test:
-	cd bin && $(MAKE) -s bin test_suite && mv test/test_suite ../
+	cd bin && $(MAKE) -s bin test_suite
 clean:
 	cd bin && $(MAKE) -s clean
