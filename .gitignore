@@ -13,7 +13,7 @@ test-suite
 
 # CMake
 CMakefiles
-Makefile
+bin/Makefile
 CMakeCache.txt
 *.cmake
 bin/bin
