@@ -6,8 +6,9 @@ Multi-threading client-server assignment
 ####Generate Makefiles
 ```
 cd bin
-cmake
+cmake ../
 ```
+NOTE: you can run `cmake .` in the root directory, but it will create a mess that you will have to clean up yourself
 
 ####Running
 If you have already generated makefiles
