@@ -6,7 +6,7 @@ Multi-threading client-server assignment
 ####Generate Makefiles
 ```
 cd bin
-cmake
+cmake ../
 ```
 
 ####Running
