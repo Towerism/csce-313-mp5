@@ -55,7 +55,6 @@ using namespace std;
 /*--------------------------------------------------------------------------*/
 
 int main(int argc, char * argv[]) {
-
   cout << "CLIENT STARTED:" << endl;
 
   cout << "Establishing control channel... " << flush;

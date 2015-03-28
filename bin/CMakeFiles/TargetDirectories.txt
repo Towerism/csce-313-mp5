@@ -1,0 +1,4 @@
+/home/mfracker/csce/313-15/CSCE-313-MP4/bin/bin/CMakeFiles/mp4.dir
+/home/mfracker/csce/313-15/CSCE-313-MP4/bin/src/server/CMakeFiles/server.dir
+/home/mfracker/csce/313-15/CSCE-313-MP4/bin/src/CMakeFiles/src.dir
+/home/mfracker/csce/313-15/CSCE-313-MP4/bin/test/CMakeFiles/test_suite.dir

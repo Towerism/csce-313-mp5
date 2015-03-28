@@ -7,6 +7,15 @@
 # Vim
 *.swp
 
+# CMake
+CMakefiles
+Makefile
+CMakeCache.txt
+*.cmake
+bin/bin
+bin/test
+bin/src
+
 # Compiled Dynamic libraries
 *.so
 *.dylib
