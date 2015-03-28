@@ -21,7 +21,7 @@ make mp4
 If you have already generated makefiles
 ```
 cd bin
-make test
+make test_suite
 ./test_suite
 ```
 NOTE: Google test must be installed or the test suite will not compile.

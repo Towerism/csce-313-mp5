@@ -7,18 +7,8 @@
 # Vim
 *.swp
 
-# Executables
-mp4
-test_suite
-
 # CMake
-CMakefiles
-bin/Makefile
-CMakeCache.txt
-*.cmake
-bin/bin
-bin/test
-bin/src
+bin
 
 # Compiled Dynamic libraries
 *.so
