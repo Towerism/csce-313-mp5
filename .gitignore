@@ -7,6 +7,10 @@
 # Vim
 *.swp
 
+# Executables
+mp4
+test-suite
+
 # CMake
 CMakefiles
 Makefile
