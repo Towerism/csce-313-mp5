@@ -7,7 +7,8 @@ Multi-threading client-server assignment
 ```
 $ cmake .
 ```
-NOTE: you can run `cmake ../` from `cd bin` to avoid cluttering your local repo.  If you decide to do this you must run `make mp4` from `cd bin` as well.  (Note when we say run `<command>` from `cd <directory>`, we mean first `cd <directory>` and then `<command>`.)
+NOTE: you can run `cmake ../` from `cd bin` to avoid cluttering your local repo.  If you decide to do this you must run `make mp4` from `cd bin` as well.  
+(When we say run `<command>` from `cd <directory>`, we mean first `cd <directory>` and then `<command>`.)
 
 ####Running
 If you have already generated makefiles
