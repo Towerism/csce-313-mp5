@@ -1,5 +1,5 @@
 set(test_sources
-    test-main.cpp
+    test_main.cpp
 )
 
 enable_testing()
