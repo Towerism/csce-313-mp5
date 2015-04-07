@@ -13,7 +13,6 @@ add_definitions(-std=c++11)
 include_directories(include)
 
 add_subdirectory(src)
-add_subdirectory(bin)
 add_subdirectory(test)
 
 set(executable_sources
