@@ -4,7 +4,6 @@
 struct Runnable {
     virtual ~Runnable() {}
 
-    // args passed from pthread_create()
     static void run_thread(Runnable* obj) {
         obj->run();
     }
