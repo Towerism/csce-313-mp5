@@ -5,7 +5,7 @@
 
 struct Test_task : public Runnable {
 public:
-    Test_task() : cash(100), cashMutex(1) { }
+    Test_task() : cash(100), cash_mutex(1) { }
     int get_cash() { return cash; }
 protected:
     virtual void run() override {
@@ -18,18 +18,18 @@ private:
     int cash;
 
     void withdraw(int amt) {
-        cashMutex.P();
+        cash_mutex.P();
         cash -= amt;
-        cashMutex.V();
+        cash_mutex.V();
     }
 
     void deposit(int amt) {
-        cashMutex.P();
+        cash_mutex.P();
         cash += amt;
-        cashMutex.V();
+        cash_mutex.V();
     }
 
-    Semaphore cashMutex;
+    Semaphore cash_mutex;
 };
 
 #endif // TEST_TASK_H
