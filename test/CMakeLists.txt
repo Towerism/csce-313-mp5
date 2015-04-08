@@ -1,5 +1,6 @@
 set(test_sources
     test_main.cpp
+    semaphoreTest.cpp
     semaphoreThreadTest.cpp
 )
 

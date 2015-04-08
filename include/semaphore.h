@@ -63,6 +63,9 @@ public:
 
     // release a resource
     int V();
+
+    // return number of resources available to "acquire"
+    int resources_available() const { return value; }
 };
 
 
