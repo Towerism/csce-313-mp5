@@ -3,7 +3,7 @@
 #include "semaphoreTest.h"
 
 TEST_F(SemaphoreTest, SingleThread) {
-    threads.push_back(std::thread(&Runnable::run_thread, task));
+    threads.push_back(std::thread(Runnable::run_thread, task));
     threads[0].join();
     
     ASSERT_EQ(100, task->get_cash());
