@@ -1,5 +1,6 @@
 set(test_sources
     test_main.cpp
+    semaphoreTest.cpp
 )
 
 enable_testing()
@@ -12,6 +13,7 @@ add_executable(test_suite ${test_sources})
 
 set(test_suite_libs 
     ${GTEST_BOTH_LIBRARIES}
+    src
     pthread
 )
 target_link_libraries(test_suite ${test_suite_libs})
