@@ -21,7 +21,8 @@
 /* INCLUDES */
 /*--------------------------------------------------------------------------*/
 
-#include <pthread.h>
+#include <mutex>
+#include <condition_variable>
 
 /*--------------------------------------------------------------------------*/
 /* DATA STRUCTURES */ 
@@ -46,8 +47,10 @@ private:
 
     // resource count
     int value;
-    pthread_mutex_t m;
-    pthread_cond_t  c;
+    std::mutex mtx;
+    std::condition_variable_any cv;
+
+    bool is_value_zero() { return value == 0; }
 
 public:
 
