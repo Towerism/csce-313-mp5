@@ -42,15 +42,11 @@
 
 class Semaphore {
 private:
-    /* -- INTERNAL DATA STRUCTURES
-        You may need to change them to fit your implementation. */
 
     // resource count
     int value;
     std::mutex mtx;
     std::condition_variable_any cv;
-
-    bool is_value_zero() { return value == 0; }
 
 public:
 
