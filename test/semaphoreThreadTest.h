@@ -1,5 +1,5 @@
-#ifndef SEMAPHORETEST_H
-#define SEMAPHORETEST_H
+#ifndef SEMAPHORETHREADTEST_H
+#define SEMAPHORETHREADTEST_H
 
 #include <gtest/gtest.h>
 #include <thread>
@@ -8,11 +8,11 @@
 #include "runnable.h"
 #include "test_task.h"
 
-struct SemaphoreTest : public ::testing::Test {
+struct SemaphoreThreadTest : public ::testing::Test {
 protected:
-    SemaphoreTest() : task(new Test_task) { }
+    SemaphoreThreadTest() : task(new Test_task) { }
 
-    ~SemaphoreTest() {
+    ~SemaphoreThreadTest() {
         delete task;
     }
 
@@ -20,4 +20,4 @@ protected:
     std::vector<std::thread> threads;
 };
 
-#endif // SEMAPHORETEST_H
+#endif // SEMAPHORETHREADTEST_H
