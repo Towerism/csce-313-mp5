@@ -53,6 +53,7 @@ public:
     /* -- CONSTRUCTOR/DESTRUCTOR */
 
     Semaphore(int _val);
+    Semaphore() : Semaphore(1) { } // initializes to mutex
 
     ~Semaphore();
 
