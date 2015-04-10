@@ -27,10 +27,12 @@
 #include <sys/stat.h>
 
 #include <pthread.h>
+#include <thread>
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
 
+#include <vector>
 #include "reqchannel.h"
 
 using namespace std;
@@ -52,6 +54,7 @@ using namespace std;
 /*--------------------------------------------------------------------------*/
 
 static int nthreads = 0;
+static vector<thread> threads;
 
 /*--------------------------------------------------------------------------*/
 /* FORWARDS */
@@ -119,11 +122,12 @@ void process_newthread(RequestChannel & _channel, const string & _request) {
 
   // -- Create new thread to handle request channel
 
-  pthread_t thread_id;
   //  cout << "starting new thread " << nthreads << endl;
+  threads.emplace_back(handle_data_requests, data_channel);
+  /*
   if (error = pthread_create(& thread_id, NULL, handle_data_requests, data_channel)) {
     fprintf(stderr, "p_create failed: %s\n", strerror(error));
-  }  
+  } */ 
 
 }
 

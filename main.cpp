@@ -24,11 +24,17 @@
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <thread>
+#include <vector>
 
 #include <errno.h>
 #include <unistd.h>
 
 #include "reqchannel.h"
+#include "bounded_buffer.h"
+#include "client_task.h"
+#include "worker_task.h"
+#include "runnable.h"
 
 using namespace std;
 
@@ -55,35 +61,58 @@ using namespace std;
 /*--------------------------------------------------------------------------*/
 
 int main(int argc, char * argv[]) {
+
+  pid_t pid = fork();
+  if (pid <= 0) {
+      execv("data_server", argv);
+  }
+
+  int n = 10000;
+  int b = 100;
+  int w = 4;
+
   cout << "CLIENT STARTED:" << endl;
 
   cout << "Establishing control channel... " << flush;
   RequestChannel chan("control", RequestChannel::CLIENT_SIDE);
-  cout << "done." << endl;;
+  cout << "done." << endl;
 
-  /* -- Start sending a sequence of requests */
+  Bounded_buffer<string> buffer(b);
 
-  string reply1 = chan.send_request("hello");
-  cout << "Reply to request 'hello' is '" << reply1 << "'" << endl;
+  /* create client threads */
+  vector<thread> client_threads;
+  vector<Client_task> client_tasks;
 
-  string reply2 = chan.send_request("data Joe Smith");
-  cout << "Reply to request 'data Joe Smith' is '" << reply2 << "'" << endl;
+  client_tasks.emplace_back("Joe Smith", buffer, n);
+  client_tasks.emplace_back("Jane Smith", buffer, n);
+  client_tasks.emplace_back("John Doe", buffer, n);
 
-  string reply3 = chan.send_request("data Jane Smith");
-  cout << "Reply to request 'data Jane Smith' is '" << reply3 << "'" << endl;
+  for (auto& ct : client_tasks) {
+      client_threads.emplace_back(Runnable::run_thread, &ct);
+  }
+  
+  /* create worker threads */
+  vector<thread> worker_threads;
+  vector<Worker_task> worker_tasks;
 
-  string reply5 = chan.send_request("newthread");
-  cout << "Reply to request 'newthread' is " << reply5 << "'" << endl;
-  RequestChannel chan2(reply5, RequestChannel::CLIENT_SIDE);
+  for (int i = 0; i < w; ++i) {
+    worker_tasks.emplace_back(buffer, chan);
+  }
+  for (auto& wt : worker_tasks) {
+    worker_threads.emplace_back(Runnable::run_thread, &wt);
+  }
 
-  string reply6 = chan2.send_request("data John Doe");
-  cout << "Reply to request 'data John Doe' is '" << reply6 << "'" << endl;
+  /* create histogram threads */
 
-  string reply7 = chan2.send_request("quit");
-  cout << "Reply to request 'quit' is '" << reply7 << "'" << endl;
 
-  string reply4 = chan.send_request("quit");
-  cout << "Reply to request 'quit' is '" << reply4 << "'" << endl;
+  /* wait for clients to finish and clean up */
+  for (auto& t : client_threads) {
+    t.join();
+  }
+  for (auto& wt : worker_tasks) {
+    wt.clean_up();
+  }
 
-  usleep(1000000);
+  string quit_reply = chan.send_request("quit");
+  cout << "Reply to request 'quit' is '" << quit_reply << "'" << endl;
 }

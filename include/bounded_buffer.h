@@ -8,7 +8,7 @@
 template <typename T>
 struct Bounded_buffer {
     Bounded_buffer(int buf_limit) : 
-        size(0), limit(buf_limit), empty_queue(0), full_queue(buf_limit), queue_mutex(1) { }
+        size(0), limit(buf_limit), empty_slots(buf_limit), full_slots(0), queue_mutex(1) { }
 
     void enqueue(T item);
     T dequeue();
@@ -18,35 +18,36 @@ struct Bounded_buffer {
     int get_limit() const { return limit; }
 
     // getters used for testing
-    const Semaphore& get_sem_empty() const { return empty_queue; }
-    const Semaphore& get_sem_full() const { return full_queue; }
+    const Semaphore& get_sem_empty() const { return empty_slots; }
+    const Semaphore& get_sem_full() const { return full_slots; }
 
 private:
     std::queue<T> queue;
 
     int size;
     int limit;
-    Semaphore empty_queue;
-    Semaphore full_queue;
+
+    Semaphore empty_slots;
+    Semaphore full_slots;
     Semaphore queue_mutex;
 };
 
 template <typename T>
 void Bounded_buffer<T>::enqueue(T item) {
-    full_queue.P();
+    empty_slots.P();
     queue_mutex.P();
 
     queue.push(item);
     ++size;
 
     queue_mutex.V();
-    empty_queue.V();
+    full_slots.V();
 }
 
 template <typename T>
 T Bounded_buffer<T>::dequeue() {
     T ret;
-    empty_queue.P();
+    full_slots.P();
     queue_mutex.P();
 
     ret = queue.front();
@@ -54,7 +55,7 @@ T Bounded_buffer<T>::dequeue() {
     --size;
 
     queue_mutex.V();
-    full_queue.V();
+    empty_slots.V();
     return ret;
 }
 
