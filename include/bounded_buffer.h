@@ -5,8 +5,6 @@
 #include <vector>
 #include "semaphore.h"
 
-// A thread-safe queue
-
 template <typename T>
 struct Bounded_buffer {
     Bounded_buffer(int buf_limit) : 
@@ -28,13 +26,10 @@ private:
 
     int size;
     int limit;
-    
     Semaphore empty_queue;
     Semaphore full_queue;
     Semaphore queue_mutex;
 };
-
-/* implementation details */
 
 template <typename T>
 void Bounded_buffer<T>::enqueue(T item) {
