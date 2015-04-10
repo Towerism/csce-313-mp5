@@ -23,6 +23,7 @@
 
 #include <mutex>
 #include <condition_variable>
+#include <atomic>
 
 /*--------------------------------------------------------------------------*/
 /* DATA STRUCTURES */ 
@@ -45,6 +46,7 @@ private:
 
     // resource count
     int value;
+    int wakeups;
     std::mutex mtx;
     std::condition_variable_any cv;
 

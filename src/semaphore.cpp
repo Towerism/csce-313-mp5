@@ -1,14 +1,12 @@
 #include "semaphore.h"
 
-Semaphore::Semaphore(int _val) : value(_val) { }
+Semaphore::Semaphore(int _val) : value(_val), wakeups(0) { }
 
 Semaphore::~Semaphore() { }
 
 int Semaphore::P() {
     mtx.lock();
-    while(value == 0) {
-        cv.wait(mtx);
-    }
+    cv.wait(mtx, [this]() { return value; });
     --value;
     mtx.unlock();
     return 0;
@@ -17,7 +15,7 @@ int Semaphore::P() {
 int Semaphore::V() {
     mtx.lock();
     ++value;
-    cv.notify_all();
+    cv.notify_one();
     mtx.unlock();
     return 0;
 }
