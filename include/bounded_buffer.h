@@ -2,7 +2,6 @@
 #define BOUNDED_BUFFER_H
 
 #include <queue>
-#include <vector>
 #include "semaphore.h"
 
 template <typename T>
