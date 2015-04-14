@@ -26,7 +26,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#include <pthread.h>
 #include <thread>
 #include <errno.h>
 #include <unistd.h>
@@ -149,7 +148,6 @@ void process_request(RequestChannel & _channel, const string & _request) {
   else {
     _channel.cwrite("unknown request");
   }
-
 }
 
 void handle_process_loop(RequestChannel & _channel) {
