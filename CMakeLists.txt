@@ -14,6 +14,7 @@ include_directories(include)
 
 add_subdirectory(src)
 add_subdirectory(test)
+add_subdirectory(googletest)
 
 set(executable_sources
     main.cpp

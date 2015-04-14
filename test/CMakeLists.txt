@@ -7,16 +7,13 @@ set(test_sources
 
 enable_testing()
 
-find_package(GTest REQUIRED)
-
-include_directories(${GTEST_INCLUDE_DIRS})
+include_directories(${CMAKE_SOURCE_DIR}/googletest/include)
 
 add_executable(test_suite ${test_sources})
 
 set(test_suite_libs 
-    ${GTEST_BOTH_LIBRARIES}
+    gtest
     src
-    pthread
 )
 target_link_libraries(test_suite ${test_suite_libs})
 
