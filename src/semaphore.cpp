@@ -6,7 +6,7 @@ Semaphore::~Semaphore() { }
 
 int Semaphore::P() {
     mtx.lock();
-    cv.wait(mtx, [this]() { return value; });
+    cv.wait(mtx, [this]() -> bool { return value > 0; });
     --value;
     mtx.unlock();
     return 0;
