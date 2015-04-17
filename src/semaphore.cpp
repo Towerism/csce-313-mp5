@@ -1,23 +1,29 @@
 #include "semaphore.h"
 
-Semaphore::Semaphore(int _val) : value(_val) { }
+Semaphore::Semaphore(int _val) : value(_val) { 
+  pthread_mutex_init(&mtx, nullptr);
+  pthread_cond_init(&cv, nullptr);
+}
 
-Semaphore::~Semaphore() { }
+Semaphore::~Semaphore() {
+  pthread_mutex_destroy(&mtx);
+  pthread_cond_destroy(&cv);
+}
 
 int Semaphore::P() {
-    mtx.lock();
-    while(value == 0) {
-        cv.wait(mtx);
-    }
-    --value;
-    mtx.unlock();
-    return 0;
+  pthread_mutex_lock(&mtx);
+  while(value == 0) {
+    pthread_cond_wait(&cv, &mtx);
+  }
+  --value;
+  pthread_mutex_unlock(&mtx);
+  return 0;
 }
 
 int Semaphore::V() {
-    mtx.lock();
-    ++value;
-    cv.notify_all();
-    mtx.unlock();
-    return 0;
+  pthread_mutex_lock(&mtx);
+  ++value;
+  pthread_cond_broadcast(&cv);
+  pthread_mutex_unlock(&mtx);
+  return 0;
 }
