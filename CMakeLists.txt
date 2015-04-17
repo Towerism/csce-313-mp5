@@ -11,9 +11,13 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O4 -DNDEBUG")
 add_definitions(-std=c++11)
 
 include_directories(include)
+include_directories(lib)
+include_directories("lib/ascii-engine") # for ascii-engine
+include_directories("lib/ascii-engine/include") # for ascii-engine
 
 add_subdirectory(src)
 add_subdirectory(test)
+add_subdirectory(lib/ascii-engine)
 add_subdirectory(googletest)
 
 set(executable_sources
@@ -22,6 +26,8 @@ set(executable_sources
 add_executable(${CMAKE_PROJECT_NAME} ${executable_sources})
 
 set(executable_libs
+    asciiengine
+    test_suite_lib
     src
     server
 )
