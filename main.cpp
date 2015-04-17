@@ -26,6 +26,7 @@
 #include <sys/stat.h>
 #include <pthread.h>
 #include <vector>
+#include <memory>
 
 #include <errno.h>
 #include <unistd.h>
@@ -67,9 +68,9 @@ int main(int argc, char * argv[]) {
       execv("data_server", argv);
   }
 
-  int n = 10000;
+  int n = 0;
   int b = 100;
-  int w = 2;
+  int w = 10;
 
   cout << "CLIENT STARTED:" << endl;
 
@@ -96,9 +97,13 @@ int main(int argc, char * argv[]) {
   /* create worker threads */
   vector<pthread_t> worker_threads;
   vector<Worker_task> worker_tasks;
+  vector<shared_ptr<RequestChannel>> worker_channels;
 
   for (int i = 0; i < w; ++i) {
-    worker_tasks.emplace_back(buffer, chan);
+    std::string chan_handle = chan.send_request("newthread");
+    RequestChannel* rc = new RequestChannel(chan_handle, RequestChannel::CLIENT_SIDE);
+    worker_channels.emplace_back(rc);
+    worker_tasks.emplace_back(buffer, *rc);
   }
   for (auto& wt : worker_tasks) {
     pthread_t t;
@@ -110,13 +115,21 @@ int main(int argc, char * argv[]) {
 
 
   /* wait for clients to finish and clean up */
+
   for (auto t : client_threads) {
+    std::cout << "waiting on client\n";
     pthread_join(t, nullptr);
   }
-  for (auto& wt : worker_tasks) {
-    wt.clean_up();
+  std::cout << "clients finished\n";
+
+  while (buffer.get_size() > 0);
+  for (int i = 0; i < worker_tasks.size(); ++i) {
+    worker_channels[i]->send_request("quit");
+    worker_tasks[i].cancel();
   }
 
   string quit_reply = chan.send_request("quit");
   cout << "Reply to request 'quit' is '" << quit_reply << "'" << endl;
+  cout << "hi\n";
+  exit(0);
 }
