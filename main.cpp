@@ -36,6 +36,7 @@
 #include "client_task.h"
 #include "worker_task.h"
 #include "runnable.h"
+#include "data.h"
 
 using namespace std;
 
@@ -78,7 +79,7 @@ int main(int argc, char * argv[]) {
   RequestChannel chan("control", RequestChannel::CLIENT_SIDE);
   cout << "done." << endl;
 
-  Bounded_buffer<string> buffer(b);
+  Bounded_buffer<Data> buffer(b);
 
   /* create client threads */
   vector<pthread_t> client_threads;
