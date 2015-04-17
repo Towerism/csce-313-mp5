@@ -1,10 +1,10 @@
 /* 
-    File: semaphore.h
+File: semaphore.h
 
-    Author: R. Bettati
-            Department of Computer Science
-            Texas A&M University
-    Date  : 08/02/11
+Author: R. Bettati
+Department of Computer Science
+Texas A&M University
+Date  : 08/02/11
 
 */
 
@@ -22,6 +22,7 @@
 /*--------------------------------------------------------------------------*/
 
 #include <mutex>
+#include <pthread.h>
 #include <condition_variable>
 
 /*--------------------------------------------------------------------------*/
@@ -43,30 +44,32 @@
 class Semaphore {
 private:
 
-    // resource count
-    int value;
-    std::mutex mtx;
-    std::condition_variable_any cv;
+  // resource count
+  int value;
+  //std::mutex mtx;
+  //std::condition_variable_any cv;
+  pthread_mutex_t mtx;
+  pthread_cond_t cv;
 
 public:
 
-    /* -- CONSTRUCTOR/DESTRUCTOR */
+  /* -- CONSTRUCTOR/DESTRUCTOR */
 
-    Semaphore(int _val);
-    Semaphore() : Semaphore(1) { } // initializes to mutex
+  Semaphore(int _val);
+  Semaphore() : Semaphore(1) { } // initializes to mutex
 
-    ~Semaphore();
+  ~Semaphore();
 
-    /* -- SEMAPHORE OPERATIONS */
+  /* -- SEMAPHORE OPERATIONS */
 
-    // acquire a resource
-    int P();
+  // acquire a resource
+  int P();
 
-    // release a resource
-    int V();
+  // release a resource
+  int V();
 
-    // return number of resources available to "acquire"
-    int resources_available() const { return value; }
+  // return number of resources available to "acquire"
+  int resources_available() const { return value; }
 };
 
 

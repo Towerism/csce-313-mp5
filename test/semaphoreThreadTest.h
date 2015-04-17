@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 #include <thread>
+#include <pthread.h>
 #include <vector>
 #include "semaphore.h"
 #include "runnable.h"
@@ -10,14 +11,14 @@
 
 struct SemaphoreThreadTest : public ::testing::Test {
 protected:
-    SemaphoreThreadTest() : task(new Test_task) { }
+  SemaphoreThreadTest() : task(new Test_task) { }
 
-    ~SemaphoreThreadTest() {
-        delete task;
-    }
+  ~SemaphoreThreadTest() {
+    delete task;
+  }
 
-    Test_task* task;
-    std::vector<std::thread> threads;
+  Test_task* task;
+  std::vector<pthread_t> threads;
 };
 
 #endif // SEMAPHORETHREADTEST_H
