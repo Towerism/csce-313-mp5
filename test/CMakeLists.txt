@@ -4,6 +4,7 @@ set(test_sources
     semaphoreThreadTest.cpp
     boundedBufferTest.cpp
     histogramTest.cpp
+    boundedBufferThreadTest.cpp
 )
 
 enable_testing()

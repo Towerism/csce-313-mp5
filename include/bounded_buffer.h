@@ -6,7 +6,7 @@
 
 template <typename T>
 struct Bounded_buffer {
-    Bounded_buffer(int buf_limit) : 
+    Bounded_buffer(int buf_limit) :
         size(0), limit(buf_limit), empty_slots(buf_limit), full_slots(0), queue_mutex(1) { }
 
     void enqueue(T item);
