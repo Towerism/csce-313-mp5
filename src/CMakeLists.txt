@@ -6,6 +6,7 @@ set(src_sources
     histo_chart.cpp
     client_task.cpp
     worker_task.cpp
+    buffer_filter.cpp
 )
 add_library(src ${src_sources})
 

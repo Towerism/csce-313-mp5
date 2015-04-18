@@ -37,6 +37,7 @@
 #include "worker_task.h"
 #include "runnable.h"
 #include "data.h"
+#include "buffer_filter.h"
 
 using namespace std;
 
@@ -96,6 +97,7 @@ int main(int argc, char * argv[]) {
   }
 
   /* create worker threads */
+  Buffer_filter out_buffers(b, {"Joe Smith", "Jane Smith", "John Doe"}); // conglomerated data server responses
   vector<pthread_t> worker_threads;
   vector<Worker_task> worker_tasks;
   vector<shared_ptr<RequestChannel>> worker_channels;
@@ -104,7 +106,7 @@ int main(int argc, char * argv[]) {
     std::string chan_handle = chan.send_request("newthread");
     RequestChannel* rc = new RequestChannel(chan_handle, RequestChannel::CLIENT_SIDE);
     worker_channels.emplace_back(rc);
-    worker_tasks.emplace_back(buffer, *rc);
+    worker_tasks.emplace_back(buffer, out_buffers, *rc);
   }
   for (auto& wt : worker_tasks) {
     pthread_t t;
@@ -132,5 +134,4 @@ int main(int argc, char * argv[]) {
   string quit_reply = chan.send_request("quit");
   cout << "Reply to request 'quit' is '" << quit_reply << "'" << endl;
   cout << "hi\n";
-  exit(0);
 }
