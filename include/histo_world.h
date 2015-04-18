@@ -4,17 +4,20 @@
 #include <string>
 
 #include "ascii-engine/include/ascii-engine/world.h"
-//#include "entities/game_board.h"
 #include "ascii-engine/include/ascii-engine/entity.h"
 #include <memory>
+#include "histo_chart.h"
 
 namespace ae = ascii_engine;
 
 struct HistoWorld : ae::World {
-  HistoWorld(int x, int y, std::vector<std::string> names);
-  virtual void update(double delta_time);
+  HistoWorld(int x, int y);
+
+  void addClient(HistoClient * client){chart->addClient(client);}
+  int getClients(){return chart->clients.size();}
+
 private:
-  std::shared_ptr<ascii_engine::Entity> chart;
+  std::shared_ptr<HistoChart> chart;
 };
 
 #endif // GAME_WORLD_H
