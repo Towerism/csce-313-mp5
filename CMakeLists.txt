@@ -1,6 +1,10 @@
 cmake_minimum_required (VERSION 2.5)
 project (mp4)
 
+if(COMMAND cmake_policy)
+  cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 set(CMAKE_CXX_FLAGS "-Wall")
@@ -21,14 +25,15 @@ add_subdirectory(lib/ascii-engine)
 add_subdirectory(googletest)
 
 set(executable_sources
-    main.cpp
-)
+  main.cpp
+  )
 add_executable(${CMAKE_PROJECT_NAME} ${executable_sources})
 
 set(executable_libs
-    asciiengine
-    test_suite_lib
-    src
-    server
-)
+  asciiengine
+  test_suite_lib
+  src
+  server
+  pthread
+  )
 target_link_libraries(${CMAKE_PROJECT_NAME} ${executable_libs})
