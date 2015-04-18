@@ -1,11 +1,12 @@
 .PHONY: all compile symlinks rmbin rmsymlinksclean
 
-###
-### compiling recipes
-###
+.DEFAULT: all
 all: compile symlinks
 	@echo -e "Done."
 
+###
+### compiling recipes
+###
 compile:
 	@mkdir -p bin && cd bin && cmake ../ && make
 
