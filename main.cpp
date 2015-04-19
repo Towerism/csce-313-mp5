@@ -133,5 +133,4 @@ int main(int argc, char * argv[]) {
 
   string quit_reply = chan.send_request("quit");
   cout << "Reply to request 'quit' is '" << quit_reply << "'" << endl;
-  cout << "hi\n";
 }
