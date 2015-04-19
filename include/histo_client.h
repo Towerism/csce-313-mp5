@@ -6,9 +6,10 @@
 #include <string>
 #include "runnable.h"
 #include "bounded_buffer.h"
+#include "data.h"
 
 struct HistoClient : public Runnable {
- HistoClient(std::string name, Bounded_buffer<int>& buf) : client_name(name), buffer(buf), client_stats(10, 0){}
+ HistoClient(std::string name, Bounded_buffer<Data>& buf) : client_name(name), buffer(buf), client_stats(10, 0){}
 
   //add a single datum at a time
   void addData(int d);
@@ -17,7 +18,7 @@ struct HistoClient : public Runnable {
 
   //member variables
   std::string client_name;
-  Bounded_buffer<int>& buffer;
+  Bounded_buffer<Data>& buffer;
   std::vector<int> client_stats;
 };
 

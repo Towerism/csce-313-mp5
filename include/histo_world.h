@@ -3,15 +3,15 @@
 #include <vector>
 #include <string>
 
-#include "ascii-engine/include/ascii-engine/world.h"
-#include "ascii-engine/include/ascii-engine/entity.h"
+#include "ascii-engine/world.h"
+#include "ascii-engine/entity.h"
 #include <memory>
 #include "histo_chart.h"
 
 namespace ae = ascii_engine;
 
 struct HistoWorld : ae::World {
-  HistoWorld(int x, int y);
+  HistoWorld();
 
   void addClient(HistoClient * client){chart->addClient(client);}
   int getClients(){return chart->clients.size();}

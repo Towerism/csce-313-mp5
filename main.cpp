@@ -38,6 +38,10 @@
 #include "runnable.h"
 #include "data.h"
 #include "buffer_filter.h"
+#include "histo_client.h"
+#include "histo_world.h"
+#include "ascii-engine/world.h"
+#include "ascii-engine/engine.h"
 
 using namespace std;
 
@@ -100,13 +104,13 @@ int main(int argc, char * argv[]) {
   Buffer_filter out_buffers(b, {"Joe Smith", "Jane Smith", "John Doe"}); // conglomerated data server responses
   vector<pthread_t> worker_threads;
   vector<Worker_task> worker_tasks;
-  vector<shared_ptr<RequestChannel>> worker_channels;
+  vector<RequestChannel*> worker_channels;
 
   for (int i = 0; i < w; ++i) {
     std::string chan_handle = chan.send_request("newthread");
     RequestChannel* rc = new RequestChannel(chan_handle, RequestChannel::CLIENT_SIDE);
-    worker_channels.emplace_back(rc);
-    worker_tasks.emplace_back(buffer, out_buffers, *rc);
+    worker_channels.push_back(rc);
+    worker_tasks.emplace_back(buffer, out_buffers, rc);
   }
   for (auto& wt : worker_tasks) {
     pthread_t t;
@@ -115,6 +119,30 @@ int main(int argc, char * argv[]) {
   }
 
   /* create histogram threads */
+  /*
+  vector<pthread_t> histo_threads;
+  vector<std::shared_ptr<HistoClient>> histo_tasks;
+
+  histo_tasks.emplace_back(new HistoClient("Joe Smith", *out_buffers.get("Joe Smith")));
+  histo_tasks.emplace_back(new HistoClient("Jane Smith", *out_buffers.get("Jane Smith")));
+  histo_tasks.emplace_back(new HistoClient("John Doe", *out_buffers.get("John Doe")));
+
+  for (auto ht : histo_tasks) {
+    pthread_t t;
+    pthread_create(&t, nullptr, Runnable::run_thread, ht.get());
+    histo_threads.push_back(t);
+  }
+
+  ascii_engine::Engine engine(20);
+  std::shared_ptr<HistoWorld> histo_world(new HistoWorld);
+  for (auto ht : histo_tasks) {
+    histo_world->addClient(ht.get());
+  }
+  engine.set_world(histo_world);
+  engine.game_loop();
+  */
+
+
 
 
   /* wait for clients to finish and clean up */
@@ -124,12 +152,21 @@ int main(int argc, char * argv[]) {
     pthread_join(t, nullptr);
   }
   std::cout << "clients finished\n";
+  for (auto t : worker_threads) {
+    std::cout << "waiting on client\n";
+    pthread_join(t, nullptr);
+  }
 
-  while (buffer.get_size() > 0);
+  /*
+  while (buffer.get_size() > 0) {
+    std::cout << "buffer size: " << buffer.get_size() << std::endl;
+  }
   for (int i = 0; i < worker_tasks.size(); ++i) {
     worker_channels[i]->send_request("quit");
+    worker_tasks[i].cancel();
   }
 
   string quit_reply = chan.send_request("quit");
   cout << "Reply to request 'quit' is '" << quit_reply << "'" << endl;
+  */
 }

@@ -6,7 +6,7 @@
 using namespace std;
 
 //based on ConnectFour
-HistoWorld::HistoWorld(int x, int y) :
+HistoWorld::HistoWorld() :
   ascii_engine::World(200, 100), chart(new HistoChart()) {
     add(chart);
   }

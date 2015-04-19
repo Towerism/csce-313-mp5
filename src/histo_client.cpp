@@ -18,6 +18,8 @@ int HistoClient::sumOfStats(){
 
 void HistoClient::run() {
   while(true){
-      buffer.dequeue();
-    }
+    Data d = buffer.dequeue();
+    int x = std::stoi(d.data);
+    addData(x);
+  }
 }

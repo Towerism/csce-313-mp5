@@ -5,12 +5,13 @@
 #include "histo_world.h"
 #include "histo_client.h"
 #include "bounded_buffer.h"
-#include "ascii-engine/include/ascii-engine/engine.h"
+#include "ascii-engine/engine.h"
+#include "data.h"
 
 TEST(HistogramTest, Generate) {
   ascii_engine::Engine engine(60);
-  HistoWorld * h = new HistoWorld(200, 100);
-  Bounded_buffer<int> buf(3);
+  HistoWorld * h = new HistoWorld();
+  Bounded_buffer<Data> buf(3);
   h->addClient(new HistoClient("Joe", buf));
   h->addClient(new HistoClient("Joe", buf));
   h->addClient(new HistoClient("Joe", buf));
@@ -20,8 +21,8 @@ TEST(HistogramTest, Generate) {
 
 TEST(HistogramTest, Add) {
   ascii_engine::Engine engine(60);
-  HistoWorld * h = new HistoWorld(200, 100);
-  Bounded_buffer<int> buf(3);
+  HistoWorld * h = new HistoWorld();
+  Bounded_buffer<Data> buf(3);
   HistoClient * hc_1 = new HistoClient("Joe Smith", buf);
   HistoClient * hc_2 = new HistoClient("Jane Smith", buf);
   HistoClient * hc_3 = new HistoClient("John Doe", buf);

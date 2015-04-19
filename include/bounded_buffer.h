@@ -1,6 +1,7 @@
 #ifndef BOUNDED_BUFFER_H
 #define BOUNDED_BUFFER_H
 
+#include <iostream>
 #include <queue>
 #include "semaphore.h"
 
@@ -33,6 +34,8 @@ private:
 
 template <typename T>
 void Bounded_buffer<T>::enqueue(T item) {
+    std::cout << "My limit: " << limit << std::endl;
+    std::cout << "My size: " << size << std::endl;
     empty_slots.P();
     queue_mutex.P();
 
@@ -45,6 +48,8 @@ void Bounded_buffer<T>::enqueue(T item) {
 
 template <typename T>
 T Bounded_buffer<T>::dequeue() {
+    std::cout << "My limit: " << limit << std::endl;
+    std::cout << "My size: " << size << std::endl;
     T ret;
     full_slots.P();
     queue_mutex.P();
