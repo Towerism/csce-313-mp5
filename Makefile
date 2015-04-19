@@ -6,9 +6,12 @@ all: compile symlinks
 	@echo "Done."
 
 
+###
 ### testing recipes
+###
 test: all
 	@./test_suite
+
 
 ###
 ### compiling recipes
