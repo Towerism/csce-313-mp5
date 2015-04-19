@@ -12,7 +12,7 @@ all: compile symlinks
 compile: generate
 	@make -C bin
 generate:
-	@mkdir -p bin && cd bin && cmake ../
+	@mkdir -p bin && cd bin && cmake ..
 
 
 ###
