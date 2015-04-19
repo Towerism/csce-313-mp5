@@ -1,4 +1,5 @@
-.PHONY: all compile symlinks rmbin rmsymlinksclean
+.PHONY: all compile generate symlinks clean-bin clean-symlinks clean
+
 
 .DEFAULT: all
 all: compile symlinks
@@ -8,8 +9,10 @@ all: compile symlinks
 ###
 ### compiling recipes
 ###
-compile:
-	@mkdir -p bin && cd bin && cmake ../ && make
+compile: generate
+	@make -C bin
+generate:
+	@mkdir -p bin && cd bin && cmake ../
 
 
 ###
@@ -17,13 +20,10 @@ compile:
 ###
 symlinks: mp4 test_suite data_server
 	@echo -e "Making Symlinks..."
-
-mp4: compile
+mp4: data_server
 	@ln -sf bin/mp4 mp4
-
 test_suite: compile
 	@ln -sf bin/test_suite test_suite
-
 data_server: compile
 	@ln -sf bin/data_server data_server
 
@@ -31,12 +31,10 @@ data_server: compile
 ###
 ### cleaning recipes
 ###
-rmbin:
+clean-bin:
 	@echo -e "Removing Binaries..."
 	@rm bin -rf
-
-rmsymlinks:
+clean-symlinks:
 	@echo -e "Removing Symlinks..."
 	@find -type l -delete
-
-clean: rmbin rmsymlinks
+clean: clean-bin clean-symlinks
