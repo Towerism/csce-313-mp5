@@ -120,16 +120,9 @@ int main(int argc, char * argv[]) {
   /* wait for clients to finish and clean up */
 
   for (auto t : client_threads) {
-    std::cout << "waiting on client\n";
     pthread_join(t, nullptr);
   }
   std::cout << "clients finished\n";
-
-  while (buffer.get_size() > 0);
-  for (int i = 0; i < worker_tasks.size(); ++i) {
-    worker_channels[i]->send_request("quit");
-    worker_tasks[i].cancel();
-  }
 
   string quit_reply = chan.send_request("quit");
   cout << "Reply to request 'quit' is '" << quit_reply << "'" << endl;
