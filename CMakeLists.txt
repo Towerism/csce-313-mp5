@@ -22,7 +22,7 @@ include_directories("lib/ascii-engine/include") # for ascii-engine
 add_subdirectory(src)
 add_subdirectory(test)
 add_subdirectory(lib/ascii-engine)
-add_subdirectory(googletest)
+add_subdirectory(lib/googletest)
 
 set(executable_sources
   main.cpp
