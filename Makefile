@@ -1,10 +1,14 @@
-.PHONY: all compile generate symlinks clean-bin clean-symlinks clean
+.PHONY: all test compile generate symlinks clean-bin clean-symlinks clean
 
 
 .DEFAULT: all
 all: compile symlinks
-	@echo -e "Done."
+	@echo "Done."
 
+
+### testing recipes
+test: all
+	@./test_suite
 
 ###
 ### compiling recipes
@@ -19,7 +23,7 @@ generate:
 ### symlink recipes
 ###
 symlinks: mp4 test_suite data_server
-	@echo -e "Making Symlinks..."
+	@echo "Making Symlinks..."
 mp4: data_server
 	@ln -sf bin/mp4 mp4
 test_suite: compile
@@ -32,9 +36,9 @@ data_server: compile
 ### cleaning recipes
 ###
 clean-bin:
-	@echo -e "Removing Binaries..."
+	@echo "Removing Binaries..."
 	@rm bin -rf
 clean-symlinks:
-	@echo -e "Removing Symlinks..."
+	@echo "Removing Symlinks..."
 	@find -type l -delete
 clean: clean-bin clean-symlinks
