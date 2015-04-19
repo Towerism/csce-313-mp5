@@ -159,7 +159,7 @@ void handle_process_loop(RequestChannel & _channel) {
 
     if (request.compare("quit") == 0) {
       _channel.cwrite("bye");
-      usleep(10000);          // give the other end a bit of time.
+      //usleep(10000);          // give the other end a bit of time.
       break;                  // break out of the loop;
     }
 
