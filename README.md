@@ -9,10 +9,17 @@ This will make everything you need to run the main program, run tests, etc.
 $ make
 ```
 
-####Running
-After compiling,
+####Usage
+To run with default options (10000 requests, 100 buffer limit, 10 worker threads):
 ```
 $ ./mp4
+```
+To specify options, you can use the following
+```
+-n <num requests>
+-b <buffer limit>
+-w <num workthreads>
+-x disables graphics
 ```
 
 ####Testing
