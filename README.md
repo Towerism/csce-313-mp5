@@ -10,7 +10,6 @@ $ make
 ```
 
 ####Usage
-After compiling, you have the following options:
 To run with default options (10000 requests, 100 buffer limit, 10 worker threads):
 ```
 $ ./mp4
