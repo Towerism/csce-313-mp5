@@ -12,7 +12,7 @@ $ make
 ####Usage
 To run with default options (10000 requests, 100 buffer limit, 10 worker threads):
 ```
-$ ./mp4
+$ ./client
 ```
 To specify options, you can use the following
 ```
