@@ -6,7 +6,7 @@
 
 .DEFAULT: all
 all: compile symlinks
-	@echo "Done."
+	@echo "-- Done"
 
 
 ###
@@ -22,10 +22,10 @@ test: all
 compile: submodule-init submodule-update generate
 	@make -C bin
 submodule-init:
-	@echo "Initializing submodules..."
+	@echo "-- Initializing submodules"
 	@git submodule init
 submodule-update:
-	@echo "Updating submodules..."
+	@echo "-- Updating submodules"
 	@git submodule update
 generate:
 	@mkdir -p bin && cd bin && cmake ..
@@ -35,7 +35,7 @@ generate:
 ### symlink recipes
 ###
 symlinks: mp4 test_suite data_server
-	@echo "Making Symlinks..."
+	@echo "-- Making Symlinks"
 mp4: data_server
 	@ln -sf bin/mp4 mp4
 test_suite: compile
@@ -48,9 +48,9 @@ data_server: compile
 ### cleaning recipes
 ###
 clean-bin:
-	@echo "Removing Binaries..."
+	@echo "-- Removing Binaries"
 	@rm -rf bin
 clean-symlinks:
-	@echo "Removing Symlinks..."
+	@echo "-- Removing Symlinks..."
 	@find -type l -delete
 clean: clean-bin clean-symlinks
