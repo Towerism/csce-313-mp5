@@ -1,3 +1,6 @@
 [submodule "lib/ascii-engine"]
 	path = lib/ascii-engine
 	url = git@github.tamu.edu:mfracker/CSCE-313-MP4.git
+[submodule "lib/googletest"]
+	path = lib/googletest
+	url = git@github.com:Towerism/googletest.git
