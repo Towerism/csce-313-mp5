@@ -93,6 +93,7 @@ int main(int argc, char * argv[]) {
         break;
       case 'x':
         x = false;
+        break;
       case ':':
         if (optopt == '\0') { break; }
         fprintf(stderr, "Option -%c requires an operand\n", optopt);
