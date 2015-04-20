@@ -40,7 +40,7 @@ data_server: compile
 ###
 clean-bin:
 	@echo "Removing Binaries..."
-	@rm -rf bin 
+	@rm -rf bin
 clean-symlinks:
 	@echo "Removing Symlinks..."
 	@find -type l -delete
