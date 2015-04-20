@@ -77,9 +77,10 @@ int main(int argc, char * argv[]) {
   int n = 10000;
   int b = 100;
   int w = 10;
+  bool x = true;
   int flags, opt, errflag = 0;
 
-  while ((opt = getopt(argc, argv, "::n:b:w:")) != -1) {
+  while ((opt = getopt(argc, argv, "xn:b:w:")) != -1) {
     switch (opt) {
       case 'n':
         n = atoi(optarg);
@@ -90,21 +91,19 @@ int main(int argc, char * argv[]) {
       case 'w':
         w = atoi(optarg);
         break;
+      case 'x':
+        x = false;
       case ':':
-        {
-          fprintf(stderr, "Option -%c requires an operand\n", optopt);
-          ++errflag;
-          break;
-        }
+        if (optopt == '\0') { break; }
+        fprintf(stderr, "Option -%c requires an operand\n", optopt);
+        ++errflag;
+        break;
       case '?':
         fprintf(stderr, "Unrecognised option: -%c\n", optopt);
         ++errflag;
         break;
     }
   }
-  std::cout << "n: " << n << std::endl;
-  std::cout << "b: " << b << std::endl;
-  std::cout << "w: " << w << std::endl;
 
   if (errflag) {
     print_usage();
@@ -152,27 +151,28 @@ int main(int argc, char * argv[]) {
 
   /* create histogram threads */
 
-  vector<pthread_t> histo_threads;
-  vector<std::shared_ptr<HistoClient>> histo_tasks;
+    vector<pthread_t> histo_threads;
+    vector<std::shared_ptr<HistoClient>> histo_tasks;
 
-  histo_tasks.emplace_back(new HistoClient("Joe Smith", *out_buffers.get("Joe Smith")));
-  histo_tasks.emplace_back(new HistoClient("Jane Smith", *out_buffers.get("Jane Smith")));
-  histo_tasks.emplace_back(new HistoClient("John Doe", *out_buffers.get("John Doe")));
+    histo_tasks.emplace_back(new HistoClient("Joe Smith", *out_buffers.get("Joe Smith")));
+    histo_tasks.emplace_back(new HistoClient("Jane Smith", *out_buffers.get("Jane Smith")));
+    histo_tasks.emplace_back(new HistoClient("John Doe", *out_buffers.get("John Doe")));
 
-  for (auto ht : histo_tasks) {
-    pthread_t t;
-    pthread_create(&t, nullptr, Runnable::run_thread, ht.get());
-    histo_threads.push_back(t);
-  }
+    for (auto ht : histo_tasks) {
+      pthread_t t;
+      pthread_create(&t, nullptr, Runnable::run_thread, ht.get());
+      histo_threads.push_back(t);
+    }
 
-  ascii_engine::Engine engine(20);
-  std::shared_ptr<HistoWorld> histo_world(new HistoWorld);
-  for (auto ht : histo_tasks) {
-    histo_world->addClient(ht.get());
-  }
-  engine.set_world(histo_world);
-  engine.game_loop();
-
+    if (x) {
+      std::shared_ptr<HistoWorld> histo_world(new HistoWorld);
+      for (auto ht : histo_tasks) {
+        histo_world->addClient(ht.get());
+      }
+      ascii_engine::Engine engine(20);
+      engine.set_world(histo_world);
+      engine.game_loop();
+    }
 
   /* wait for clients to finish and clean up */
 
@@ -189,5 +189,5 @@ int main(int argc, char * argv[]) {
 }
 
 void print_usage() {
-  cout << "usage: ./mp4 [-n <num requests>] [-b <buffer limit>] [-w <num workthreads>]\n";
+  cout << "usage: ./mp4 [-n <num requests>] [-b <buffer limit>] [-w <num workthreads>] [-x disables graphics]\n";
 }
