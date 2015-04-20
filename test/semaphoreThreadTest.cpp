@@ -14,9 +14,14 @@ TEST_F(SemaphoreThreadTest, SingleThread) {
 }
 
 TEST_F(SemaphoreThreadTest, MultiThread) {
-  for (int i = 0; i < 32; ++i) {
+  for (int i = 0; i < 100; ++i) {
     pthread_t t;
-    pthread_create(&t, nullptr, Runnable::run_thread, task);
+    pthread_create(&t, nullptr, Runnable::run_thread, task2);
+    threads.push_back(t);
+  }
+  for (int i = 0; i < 100; ++i) {
+    pthread_t t;
+    pthread_create(&t, nullptr, Runnable::run_thread, task3);
     threads.push_back(t);
   }
   for (auto t : threads) {

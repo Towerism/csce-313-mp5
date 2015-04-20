@@ -1,22 +1,21 @@
-#ifndef TEST_TASK_H
-#define TEST_TASK_H
+#ifndef TEST_TASK_3_H
+#define TEST_TASK_3_H
 
 #include "semaphore.h"
 #include "account.h"
 
-struct Test_task : public Runnable {
+struct Test_task_3 : public Runnable {
 public:
-  Test_task() : account(100) { }
+  Test_task_3() : account(100) { }
   int get_cash() { return account.get_cash(); }
 protected:
   virtual void run() override {
     for (int i = 0; i < 100; ++i) {
       account.withdraw(10);
-      account.deposit(10);
     }
   }
 private:
   Account account;
 };
 
-#endif // TEST_TASK_H
+#endif // TEST_TASK_3_H
