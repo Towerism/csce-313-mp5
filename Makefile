@@ -4,7 +4,7 @@
 	clean
 
 BIN_DIR = bin
-MAKE = make -C $(BIN_DIR)
+MAKE = @make -C $(BIN_DIR)
 CMAKE = @mkdir -p $(BIN_DIR) && cd $(BIN_DIR) && cmake
 
 CLIENT = client
@@ -28,13 +28,13 @@ test: all-test
 ### compiling recipes
 ###
 compile: submodules generate
-	@$(MAKE)
+	$(MAKE)
 compile-test: submodules generate-test
-	@$(MAKE)
+	$(MAKE)
 generate:
-	@mkdir -p $(BIN_DIR) && cd $(BIN_DIR) && cmake ..
+	$(CMAKE)
 generate-test:
-	@mkdir -p $(BIN_DIR) && cd $(BIN_DIR) && cmake -DTestSuite=ON ..
+	$(CMAKE) -DTestSuite=ON ..
 
 ###
 ### submodule recipes
