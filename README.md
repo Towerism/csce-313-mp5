@@ -4,7 +4,7 @@ CSCE-313-MP4
 Multi-threading client-server assignment
 
 ####Compiling
-This will make everything you need to run the main program, run tests, etc.
+This will make everything you need to run the client and dataserver
 ```
 $ make
 ```
@@ -24,7 +24,6 @@ To specify options, you can use the following
 ```
 
 ####Testing
-After compiling,
 ```
-$ ./test_suite
+$ make test
 ```
