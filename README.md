@@ -19,6 +19,7 @@ To specify options, you can use the following
 -n <num requests>
 -b <buffer limit>
 -w <num workthreads>
+-g <graphic updates/second>
 -x disables graphics
 ```
 
