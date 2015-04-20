@@ -42,10 +42,10 @@ generate-test:
 submodules: submodule-init submodule-update
 submodule-init:
 	@echo "-- Initializing submodules"
-	@git submodule init > /dev/null
+	@git submodule init
 submodule-update:
 	@echo "-- Updating submodules"
-	@git submodule update > /dev/null
+	@git submodule update
 
 
 ###
