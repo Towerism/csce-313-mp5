@@ -11,7 +11,6 @@ enable_testing()
 
 include_directories(${CMAKE_SOURCE_DIR}/lib/googletest/include)
 
-add_library(test_suite_lib ${test_sources})
 add_executable(test_suite ${test_sources})
 
 set(test_suite_libs 
