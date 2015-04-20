@@ -1,4 +1,7 @@
-.PHONY: all test compile generate submodule-init submodule-update symlinks clean-bin clean-symlinks clean
+.PHONY: all test compile generate \
+				submodule-init submodule-update \
+				symlinks clean-bin clean-symlinks \
+				clean
 
 
 .DEFAULT: all
