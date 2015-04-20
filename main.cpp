@@ -77,7 +77,7 @@ int main(int argc, char * argv[]) {
   int n = 10000;
   int b = 100;
   int w = 10;
-  int g = 10;
+  int g = 5;
   bool x = true;
   int flags, opt, errflag = 0;
 
