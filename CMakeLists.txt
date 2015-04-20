@@ -9,12 +9,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 option(TestSuite "TestSuite" OFF)
 
-set(CMAKE_CXX_FLAGS "")
-set(CMAKE_CXX_FLAGS_DEBUG "-Wall -O0 -ggdb")
-set(CMAKE_CXX_FLAGS_MINSIZEREL "-Os -DNDEBUG")
-set(CMAKE_CXX_FLAGS_RELEASE "-O4 -DNDEBUG")
-
-add_definitions(-std=c++11)
+set (CXX_STD_FLAG "-std=c++11")
+set(CMAKE_CXX_FLAGS ${CXX_STD_FLAG}"")
+set(CMAKE_CXX_FLAGS_DEBUG ${CXX_STD_FLAG}" -Wall -O0 -ggdb")
+set(CMAKE_CXX_FLAGS_MINSIZEREL ${CXX_STD_FLAG}" -Os -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE ${CXX_STD_FLAG}" -O4 -DNDEBUG")
 
 include_directories(include)
 include_directories(lib)
