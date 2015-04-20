@@ -3,45 +3,63 @@
 				symlinks clean-bin clean-symlinks \
 				clean
 
+BIN_DIR = bin
+MAKE = make -C $(BIN_DIR)
+CMAKE = @mkdir -p $(BIN_DIR) && cd $(BIN_DIR) && cmake
+
+CLIENT = client
+TEST_SUITE = test_suite
+DATA_SERVER = data_server
 
 .DEFAULT: all
 all: compile symlinks
 	@echo "-- Done"
-
+all-test: compile-test symlinks-test
+	@echo "-- Done"
 
 ###
 ### testing recipes
 ###
-test: all
+test: all-test
 	@./test_suite
 
 
 ###
 ### compiling recipes
 ###
-compile: submodule-init submodule-update generate
-	@make -C bin
+compile: submodules generate
+	@$(MAKE)
+compile-test: submodules generate-test
+	@$(MAKE)
+generate:
+	@mkdir -p $(BIN_DIR) && cd $(BIN_DIR) && cmake ..
+generate-test:
+	@mkdir -p $(BIN_DIR) && cd $(BIN_DIR) && cmake -DTestSuite=ON ..
+
+###
+### submodule recipes
+submodules: submodule-init submodule-update
 submodule-init:
 	@echo "-- Initializing submodules"
 	@git submodule init
 submodule-update:
 	@echo "-- Updating submodules"
 	@git submodule update
-generate:
-	@mkdir -p bin && cd bin && cmake ..
 
 
 ###
 ### symlink recipes
 ###
-symlinks: mp4 test_suite data_server
+symlinks: client data_server
 	@echo "-- Making Symlinks"
-mp4: data_server
-	@ln -sf bin/mp4 mp4
+symlinks-test: client data_server test_suite
+	@echo "-- Making Symlinks"
+client: data_server
+	@ln -sf $(BIN_DIR)/$(CLIENT) $(CLIENT)
 test_suite: compile
-	@ln -sf bin/test_suite test_suite
+	@ln -sf $(BIN_DIR)/$(TEST_SUITE) $(TEST_SUITE) 
 data_server: compile
-	@ln -sf bin/data_server data_server
+	@ln -sf $(BIN_DIR)/$(DATA_SERVER) $(DATA_SERVER) 
 
 
 ###
@@ -49,8 +67,8 @@ data_server: compile
 ###
 clean-bin:
 	@echo "-- Removing Binaries"
-	@rm -rf bin
+	@rm -rf $(BIN_DIR)
 clean-symlinks:
-	@echo "-- Removing Symlinks..."
+	@echo "-- Removing Symlinks"
 	@find -type l -delete
 clean: clean-bin clean-symlinks
