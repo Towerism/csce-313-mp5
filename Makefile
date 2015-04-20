@@ -38,6 +38,7 @@ generate-test:
 
 ###
 ### submodule recipes
+###
 submodules: submodule-init submodule-update
 submodule-init:
 	@echo "-- Initializing submodules"
