@@ -1,12 +1,27 @@
 import math
+import time
 import subprocess
-if __name__ == '__main__':
-    testing_nums = []
-for i in range(10):
-    testing_nums.append(math.pow(5, i))
-    for i in range(10):
-        print "---------- buffer size = " + str(testing_nums[i]) + " ----------"
-        for j in range(10):
-            print "worker thread count = " + str(testing_nums[j])
+from functools import wraps
+
+def test_performance():
+    testing_buf = [10, 100, 1000, 10000]
+    #testing_work = [10, 100, 1000, 10000]
+    testing_work = [5, 10, 25, 10000]
+    number_of_tests = 4
+    for i in range(number_of_tests):
+        print "---------- buffer size = " + str(testing_buf[i]) + " ----------"
+        for j in range(number_of_tests):
+            print "worker thread count = " + str(testing_work[j])
             #-n = request count | -b is buffer size | -w is worker thread count | -x specifies no graphics
-            subprocess.call(['./mp4 ', "-x" , "-n 1000" , "-b " + str(testing_nums[i]), "-w " + str(testing_nums[i])])
+            start = time.time()
+            external_call(testing_buf[i], testing_work[j])
+            print (time.time() - start)
+
+def external_call(b, w):
+    subprocess.call(['./mp4', '-n 2000', '-b '+ str(b), '-w ' + str(w), '-x'], shell=False)
+
+
+
+
+if __name__ == '__main__':
+    test_performance()
