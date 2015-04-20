@@ -32,7 +32,7 @@ compile: submodules generate
 compile-test: submodules generate-test
 	$(MAKE)
 generate:
-	$(CMAKE)
+	$(CMAKE) ..
 generate-test:
 	$(CMAKE) -DTestSuite=ON ..
 
