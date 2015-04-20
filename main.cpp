@@ -61,7 +61,7 @@ using namespace std;
 /* FORWARDS */
 /*--------------------------------------------------------------------------*/
 
-    /* -- (none) -- */
+  void print_usage();
 
 /*--------------------------------------------------------------------------*/
 /* MAIN FUNCTION */
@@ -77,12 +77,48 @@ int main(int argc, char * argv[]) {
   int n = 10000;
   int b = 100;
   int w = 10;
+  int flags, opt, errflag = 0;
 
-  //cout << "CLIENT STARTED:" << endl;
+  while ((opt = getopt(argc, argv, "::n:b:w:")) != -1) {
+    switch (opt) {
+      case 'n':
+        n = atoi(optarg);
+        break;
+      case 'b':
+        b = atoi(optarg);
+        break;
+      case 'w':
+        w = atoi(optarg);
+        break;
+      case ':':
+        {
+          fprintf(stderr, "Option -%c requires an operand\n", optopt);
+          ++errflag;
+          break;
+        }
+      case '?':
+        fprintf(stderr, "Unrecognised option: -%c\n", optopt);
+        ++errflag;
+        break;
+    }
+  }
+  std::cout << "n: " << n << std::endl;
+  std::cout << "b: " << b << std::endl;
+  std::cout << "w: " << w << std::endl;
 
-  //cout << "Establishing control channel... " << flush;
+  if (errflag) {
+    print_usage();
+    exit(1);
+  }
+  if (n <= 0 || b <= 0 || w <= 0) {
+    fprintf(stderr, "Arguments must be positive\n");
+  }
+
+  /*
+   * Do client-esque things
+   */
+
   RequestChannel chan("control", RequestChannel::CLIENT_SIDE);
-  //cout << "done." << endl;
 
   std::shared_ptr<Bounded_buffer<Data>> buffer(new Bounded_buffer<Data>(b));
 
@@ -95,9 +131,9 @@ int main(int argc, char * argv[]) {
   client_tasks.emplace_back(new Client_task("John Doe", buffer.get(), n));
 
   for (auto ct : client_tasks) {
-      pthread_t t;
-      pthread_create(&t, nullptr, Runnable::run_thread, ct.get());
-      client_threads.push_back(t);
+    pthread_t t;
+    pthread_create(&t, nullptr, Runnable::run_thread, ct.get());
+    client_threads.push_back(t);
   }
 
   /* create worker threads */
@@ -141,18 +177,17 @@ int main(int argc, char * argv[]) {
   /* wait for clients to finish and clean up */
 
   for (auto t : client_threads) {
-    //std::cout << "waiting on client\n";
     pthread_join(t, nullptr);
   }
-  //std::cout << "clients finished\n";
 
-  while (buffer->get_size() > 0) {
-    //std::cout << "buffer size: " << buffer->get_size() << std::endl;
-  }
+  while (buffer->get_size() > 0);
   for (int i = 0; i < worker_tasks.size(); ++i) {
     worker_tasks[i]->cancel();
   }
 
   string quit_reply = chan.send_request("quit");
-  //cout << "Reply to request 'quit' is '" << quit_reply << "'" << endl;
+}
+
+void print_usage() {
+  cout << "usage: ./mp4 [-n <num requests>] [-b <buffer limit>] [-w <num workthreads>]\n";
 }
