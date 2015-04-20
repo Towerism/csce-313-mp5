@@ -80,7 +80,7 @@ int main(int argc, char * argv[]) {
   bool x = true;
   int flags, opt, errflag = 0;
 
-  while ((opt = getopt(argc, argv, "xn:b:w:")) != -1) {
+  while ((opt = getopt(argc, argv, "xhn:b:w:")) != -1) {
     switch (opt) {
       case 'n':
         n = atoi(optarg);
@@ -93,6 +93,10 @@ int main(int argc, char * argv[]) {
         break;
       case 'x':
         x = false;
+        break;
+      case 'h':
+        print_usage();
+        return 0;
       case ':':
         if (optopt == '\0') { break; }
         fprintf(stderr, "Option -%c requires an operand\n", optopt);
@@ -189,5 +193,9 @@ int main(int argc, char * argv[]) {
 }
 
 void print_usage() {
-  cout << "usage: ./mp4 [-n <num requests>] [-b <buffer limit>] [-w <num workthreads>] [-x disables graphics]\n";
+  cout << "usage: ./mp4 [-n <num requests>]\n"
+          "             [-b <buffer limit>]\n"
+          "             [-w <num workthreads>]\n"
+          "             [-x disables graphics]\n"
+          "             [-h shows this message]\n";
 }
