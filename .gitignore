@@ -27,6 +27,6 @@ bin
 *.app
 
 #mp4
-mp4
+client
 data_server
 test_suite
