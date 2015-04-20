@@ -57,6 +57,8 @@ public:
   /* -- CONSTRUCTOR/DESTRUCTOR */
 
   Semaphore(int _val);
+  Semaphore(const Semaphore& other) = delete;
+  Semaphore& operator=(const Semaphore& other) = delete;
   Semaphore() : Semaphore(1) { } // initializes to mutex
 
   ~Semaphore();

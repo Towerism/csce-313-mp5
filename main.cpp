@@ -84,37 +84,33 @@ int main(int argc, char * argv[]) {
   RequestChannel chan("control", RequestChannel::CLIENT_SIDE);
   cout << "done." << endl;
 
-  Bounded_buffer<Data> buffer(b);
+  std::shared_ptr<Bounded_buffer<Data>> buffer(new Bounded_buffer<Data>(b));
 
   /* create client threads */
   vector<pthread_t> client_threads;
-  vector<Client_task> client_tasks;
+  vector<shared_ptr<Client_task>> client_tasks;
 
-  client_tasks.emplace_back("Joe Smith", buffer, n);
-  client_tasks.emplace_back("Jane Smith", buffer, n);
-  client_tasks.emplace_back("John Doe", buffer, n);
+  client_tasks.emplace_back(new Client_task("Joe Smith", buffer.get(), n));
+  client_tasks.emplace_back(new Client_task("Jane Smith", buffer.get(), n));
+  client_tasks.emplace_back(new Client_task("John Doe", buffer.get(), n));
 
-  for (auto& ct : client_tasks) {
+  for (auto ct : client_tasks) {
       pthread_t t;
-      pthread_create(&t, nullptr, Runnable::run_thread, &ct);
+      pthread_create(&t, nullptr, Runnable::run_thread, ct.get());
       client_threads.push_back(t);
   }
 
   /* create worker threads */
   Buffer_filter out_buffers(b, {"Joe Smith", "Jane Smith", "John Doe"}); // conglomerated data server responses
   vector<pthread_t> worker_threads;
-  vector<Worker_task> worker_tasks;
-  vector<RequestChannel*> worker_channels;
+  vector<shared_ptr<Worker_task>> worker_tasks;
 
   for (int i = 0; i < w; ++i) {
-    std::string chan_handle = chan.send_request("newthread");
-    RequestChannel* rc = new RequestChannel(chan_handle, RequestChannel::CLIENT_SIDE);
-    worker_channels.push_back(rc);
-    worker_tasks.emplace_back(buffer, out_buffers, rc);
+    worker_tasks.emplace_back(new Worker_task(buffer.get(), out_buffers, chan));
   }
-  for (auto& wt : worker_tasks) {
+  for (auto wt : worker_tasks) {
     pthread_t t;
-    pthread_create(&t, nullptr, Runnable::run_thread, &wt);
+    pthread_create(&t, nullptr, Runnable::run_thread, wt.get());
     worker_threads.push_back(t);
   }
 
@@ -142,9 +138,6 @@ int main(int argc, char * argv[]) {
   engine.game_loop();
   */
 
-
-
-
   /* wait for clients to finish and clean up */
 
   for (auto t : client_threads) {
@@ -152,21 +145,14 @@ int main(int argc, char * argv[]) {
     pthread_join(t, nullptr);
   }
   std::cout << "clients finished\n";
-  for (auto t : worker_threads) {
-    std::cout << "waiting on client\n";
-    pthread_join(t, nullptr);
-  }
 
-  /*
-  while (buffer.get_size() > 0) {
-    std::cout << "buffer size: " << buffer.get_size() << std::endl;
+  while (buffer->get_size() > 0) {
+    std::cout << "buffer size: " << buffer->get_size() << std::endl;
   }
   for (int i = 0; i < worker_tasks.size(); ++i) {
-    worker_channels[i]->send_request("quit");
-    worker_tasks[i].cancel();
+   // worker_tasks[i].cancel();
   }
 
   string quit_reply = chan.send_request("quit");
   cout << "Reply to request 'quit' is '" << quit_reply << "'" << endl;
-  */
 }
