@@ -1,7 +1,7 @@
 .PHONY: all test compile generate \
-				submodule-init submodule-update \
-				symlinks clean-bin clean-symlinks \
-				clean
+	submodule-init submodule-update \
+	symlinks clean-bin clean-symlinks \
+	clean
 
 BIN_DIR = bin
 MAKE = make -C $(BIN_DIR)
