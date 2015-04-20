@@ -1,4 +1,4 @@
-.PHONY: all test compile generate symlinks clean-bin clean-symlinks clean
+.PHONY: all test compile generate submodule-init submodule-update symlinks clean-bin clean-symlinks clean
 
 
 .DEFAULT: all
@@ -16,8 +16,14 @@ test: all
 ###
 ### compiling recipes
 ###
-compile: generate
+compile: submodule-init submodule-update generate
 	@make -C bin
+submodule-init:
+	@echo "Initializing submodules..."
+	@git submodule init
+submodule-update:
+	@echo "Updating submodules..."
+	@git submodule update
 generate:
 	@mkdir -p bin && cd bin && cmake ..
 
