@@ -1,4 +1,4 @@
-/* 
+/*
     File: simpleclient.cpp
 
     Author: R. Bettati
@@ -46,7 +46,7 @@
 using namespace std;
 
 /*--------------------------------------------------------------------------*/
-/* DATA STRUCTURES */ 
+/* DATA STRUCTURES */
 /*--------------------------------------------------------------------------*/
 
     /* -- (none) -- */
@@ -74,15 +74,15 @@ int main(int argc, char * argv[]) {
       execv("data_server", argv);
   }
 
-  int n = 0;
+  int n = 100;
   int b = 100;
   int w = 10;
 
-  cout << "CLIENT STARTED:" << endl;
+  //cout << "CLIENT STARTED:" << endl;
 
-  cout << "Establishing control channel... " << flush;
+  //cout << "Establishing control channel... " << flush;
   RequestChannel chan("control", RequestChannel::CLIENT_SIDE);
-  cout << "done." << endl;
+  //cout << "done." << endl;
 
   std::shared_ptr<Bounded_buffer<Data>> buffer(new Bounded_buffer<Data>(b));
 
@@ -115,7 +115,7 @@ int main(int argc, char * argv[]) {
   }
 
   /* create histogram threads */
-  /*
+
   vector<pthread_t> histo_threads;
   vector<std::shared_ptr<HistoClient>> histo_tasks;
 
@@ -136,23 +136,23 @@ int main(int argc, char * argv[]) {
   }
   engine.set_world(histo_world);
   engine.game_loop();
-  */
+
 
   /* wait for clients to finish and clean up */
 
   for (auto t : client_threads) {
-    std::cout << "waiting on client\n";
+    //std::cout << "waiting on client\n";
     pthread_join(t, nullptr);
   }
-  std::cout << "clients finished\n";
+  //std::cout << "clients finished\n";
 
   while (buffer->get_size() > 0) {
-    std::cout << "buffer size: " << buffer->get_size() << std::endl;
+    //std::cout << "buffer size: " << buffer->get_size() << std::endl;
   }
   for (int i = 0; i < worker_tasks.size(); ++i) {
-   // worker_tasks[i].cancel();
+    worker_tasks[i]->cancel();
   }
 
   string quit_reply = chan.send_request("quit");
-  cout << "Reply to request 'quit' is '" << quit_reply << "'" << endl;
+  //cout << "Reply to request 'quit' is '" << quit_reply << "'" << endl;
 }

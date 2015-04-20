@@ -8,6 +8,7 @@ string makeNamesRow( vector<string> client_names);
 void HistoChart::update(double delta_time) {
     // do update stuff
     set_graphic(generateChart());
+    deleteRows();
     // call parent function
     ascii_engine::Entity::update(delta_time);
   }
@@ -24,7 +25,6 @@ string HistoChart::generateChart(){
   for(string r: rows) {
     chart += r;
   }
-  deleteRows();
   return chart;
 }
 
@@ -71,6 +71,7 @@ void HistoChart::populateRows(vector<string> client_names){
 
   rows.insert(rows.begin(), "      " + filled_row);
   rows.insert(rows.begin(), x_names);
+  rows.insert(rows.begin(), "Press q to exit display\n\n\n");
 }
 
 string multiplyStringBy(string original, int times){

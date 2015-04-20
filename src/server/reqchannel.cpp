@@ -1,4 +1,4 @@
-/* 
+/*
     File: requestchannel.cpp
 
     Author: R. Bettati
@@ -35,7 +35,7 @@
 using namespace std;
 
 /*--------------------------------------------------------------------------*/
-/* DATA STRUCTURES */ 
+/* DATA STRUCTURES */
 /*--------------------------------------------------------------------------*/
 
     /* -- (none) -- */
@@ -60,15 +60,15 @@ char * RequestChannel::pipe_name(Mode _mode) {
   string pname = "fifo_" + my_name;
 
   if (my_side == CLIENT_SIDE) {
-    if (_mode == READ_MODE) 
+    if (_mode == READ_MODE)
       pname += "1";
     else
       pname += "2";
   } else {
     /* SERVER_SIDE */
-    if (_mode == READ_MODE) 
+    if (_mode == READ_MODE)
       pname += "2";
-    else 
+    else
       pname += "1";
   }
   char * result = new char[pname.size()+1];
@@ -139,16 +139,16 @@ RequestChannel::RequestChannel(const string _name, const Side _side) : my_name(_
 }
 
 RequestChannel::~RequestChannel() {
-  cout << "close requests channel " << my_name << endl;
+  //cout << "close requests channel " << my_name << endl;
   close(wfd);
   close(rfd);
   if (my_side == SERVER_SIDE) {
-    cout << "close IPC mechanisms on server side for channel " << my_name << endl;
+    //cout << "close IPC mechanisms on server side for channel " << my_name << endl;
     /* Destruct the underlying IPC mechanisms. */
     if (remove(pipe_name(READ_MODE)) != 0) {
       perror(string("Request Channel (" + my_name + ") : Error deleting pipe for reading").c_str());
     }
-      
+
     if (remove(pipe_name(WRITE_MODE)) != 0) {
       perror(string("Request Channel (" + my_name + ") : Error deleting pipe for writing").c_str());
     }
@@ -174,7 +174,7 @@ string RequestChannel::cread() {
   if (read(rfd, buf, MAX_MESSAGE) < 0) {
     perror(string("Request Channel (" + my_name + "): Error reading from pipe!").c_str());
   }
-  
+
   string s = buf;
 
   //  cout << "Request Channel (" << my_name << ") reads [" << buf << "]\n";

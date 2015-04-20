@@ -15,7 +15,7 @@ struct Worker_task : public Runnable {
 
   virtual void run() override;
 
-  void cancel() { channel->send_request("quit"); delete channel; }
+  void cancel() { channel->send_request("quit"); delete channel; cancelled = true;}
 private:
   Bounded_buffer<Data>* buffer;
   Buffer_filter& out_buffers;

@@ -1,4 +1,4 @@
-/* 
+/*
     File: dataserver.cpp
 
     Author: R. Bettati
@@ -36,7 +36,7 @@
 using namespace std;
 
 /*--------------------------------------------------------------------------*/
-/* DATA STRUCTURES */ 
+/* DATA STRUCTURES */
 /*--------------------------------------------------------------------------*/
 
     /* -- (none) -- */
@@ -77,12 +77,12 @@ void * handle_data_requests(void * args) {
 
   RequestChannel * data_channel =  (RequestChannel*)args;
 
-  // -- Handle client requests on this channel. 
-  
+  // -- Handle client requests on this channel.
+
   handle_process_loop(*data_channel);
 
   // -- Client has quit. We remove channel.
- 
+
   delete data_channel;
 }
 
@@ -114,7 +114,7 @@ void process_newthread(RequestChannel & _channel, const string & _request) {
   _channel.cwrite(new_channel_name);
 
   // -- Construct new data channel (pointer to be passed to thread function)
-  
+
   RequestChannel * data_channel = new RequestChannel(new_channel_name, RequestChannel::SERVER_SIDE);
 
   // -- Create new thread to handle request channel
@@ -123,7 +123,7 @@ void process_newthread(RequestChannel & _channel, const string & _request) {
   //  cout << "starting new thread " << nthreads << endl;
   if (error = pthread_create(& thread_id, NULL, handle_data_requests, data_channel)) {
     fprintf(stderr, "p_create failed: %s\n", strerror(error));
-  }  
+  }
 
 }
 
@@ -152,10 +152,10 @@ void handle_process_loop(RequestChannel & _channel) {
 
   for(;;) {
 
-    cout << "Reading next request from channel (" << _channel.name() << ") ..." << flush;
+    //cout << "Reading next request from channel (" << _channel.name() << ") ..." << flush;
     string request = _channel.cread();
-    cout << " done (" << _channel.name() << ")." << endl;
-    cout << "New request is " << request << endl;
+    //cout << " done (" << _channel.name() << ")." << endl;
+    //cout << "New request is " << request << endl;
 
     if (request.compare("quit") == 0) {
       _channel.cwrite("bye");
@@ -165,7 +165,7 @@ void handle_process_loop(RequestChannel & _channel) {
 
     process_request(_channel, request);
   }
-  
+
 }
 
 /*--------------------------------------------------------------------------*/
