@@ -8,6 +8,7 @@ string makeNamesRow( vector<string> client_names);
 void HistoChart::update(double delta_time) {
     // do update stuff
     set_graphic(generateChart());
+    //clears rows variable before update
     deleteRows();
     // call parent function
     ascii_engine::Entity::update(delta_time);

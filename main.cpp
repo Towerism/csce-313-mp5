@@ -74,7 +74,7 @@ int main(int argc, char * argv[]) {
       execv("data_server", argv);
   }
 
-  int n = 100;
+  int n = 10000;
   int b = 100;
   int w = 10;
 
