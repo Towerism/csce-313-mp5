@@ -11,12 +11,12 @@ TEST_F(BoundedBufferThreadTest, SingleThread) {
 }
 
 TEST_F(BoundedBufferThreadTest, MultiThread) {
-  for (int i = 0; i < 10000; ++i) {
+  for (int i = 0; i < 100; ++i) {
     pthread_t t;
     pthread_create(&t, nullptr, Runnable::run_thread, task2);
     threads.push_back(t);
   }
-  for (int i = 0; i < 10000; ++i) {
+  for (int i = 0; i < 100; ++i) {
     pthread_t t;
     pthread_create(&t, nullptr, Runnable::run_thread, task3);
     threads.push_back(t);
