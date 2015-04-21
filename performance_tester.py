@@ -18,7 +18,7 @@ def test_performance():
             print (time.time() - start)
 
 def external_call(b, w):
-    subprocess.call(['./mp4', '-n 2000', '-b '+ str(b), '-w ' + str(w), '-x'], shell=False)
+    subprocess.call(['./client', '-n 2000', '-b '+ str(b), '-w ' + str(w), '-x'], shell=False)
 
 
 
