@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.5)
-project (client CXX)
+project (client)
 
 # Compiler-specific C++11 activation.
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
