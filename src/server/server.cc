@@ -1,8 +1,8 @@
-#include <server.h>
+#include <server.hh>
 
 
 namespace servsocks{
-  void start_up_server() {
+  int start_up_server() {
     int sockfd; //socket file descriptor
     sockfd = create_socket();
     set_socket_options(sockfd);
@@ -12,6 +12,7 @@ namespace servsocks{
     bind_to_socket(sockfd, host_address);
     listen_to_socket(sockfd);
     accept_loop(sockfd);
+    return sockfd;
   }
 
   void set_socket_options(int host_sockfd){
