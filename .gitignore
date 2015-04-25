@@ -4,6 +4,12 @@
 *.o
 *.obj
 
+# Vim
+*.swp
+
+# CMake
+bin
+
 # Compiled Dynamic libraries
 *.so
 *.dylib
@@ -19,3 +25,8 @@
 *.exe
 *.out
 *.app
+
+#mp4
+client
+data_server
+test_suite

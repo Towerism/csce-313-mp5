@@ -1,0 +1,6 @@
+[submodule "lib/googletest"]
+	path = lib/googletest
+	url = git@github.com:Towerism/googletest.git
+[submodule "lib/ascii-engine"]
+	path = lib/ascii-engine
+	url = git@github.com:Towerism/ascii-engine.git
