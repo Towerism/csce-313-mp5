@@ -13,7 +13,7 @@
 #define QUEUE_LIMIT 128 //note that backlog (aka socket queue) is limited to 128
 
 namespace servsocks{
-  void start_up_server();
+  int start_up_server();
   //void exit_handler() {
   //std::cout << "Exited successfully!" << std::endl;
   //}
@@ -28,7 +28,7 @@ namespace servsocks{
   void bind_to_socket(int socket_file_descriptor, struct sockaddr_in &host_address);
 
   //wraps listen()
-  void listen_to_socket(int host_sockfd);
+  void listen_to_socket(int socket_file_descriptor);
 
   void accept_loop(int socket_file_descriptor);
 
