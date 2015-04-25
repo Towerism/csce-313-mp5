@@ -1,6 +1,7 @@
 set(server_sources
     dataserver.cpp
     reqchannel.cpp
+    server.cc
 )
 add_library(server ${server_sources})
 add_executable(data_server ${server_sources})
