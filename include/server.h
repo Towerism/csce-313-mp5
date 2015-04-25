@@ -27,6 +27,10 @@ namespace servsocks{
   //wraps bind() call
   void bind_to_socket(int socket_file_descriptor, struct sockaddr_in &host_address);
 
+  //wraps listen()
+  void listen_to_socket(int host_sockfd);
+
   void accept_loop(int socket_file_descriptor);
 
+  struct sockaddr_in setup_host_socket();
 }

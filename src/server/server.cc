@@ -7,30 +7,10 @@ namespace servsocks{
     sockfd = create_socket();
     set_socket_options(sockfd);
 
-    struct sockaddr_in host_address;
-    // --from <netinet/in.h
-    //struct sockaddr_in {
-    //  short   sin_family;
-    //  u_short sin_port;
-    //  struct  in_addr sin_addr;
-    //  char    sin_zero[8];
-    //};
-    //set_up_host() should encapsulate the following lines
-    host_address.sin_family = AF_INET;
-    host_address.sin_port = htons(PORT);
-    host_address.sin_addr.s_addr = inet_addr("127.0.0.1");
-    //since memset can be optimized away, we use memcpy to scrub the rest of the struct
-    char zero_out[8] = {0};
-    memcpy(&(host_address.sin_zero), &zero_out, 8);
+    struct sockaddr_in host_address = setup_host_socket();
 
-    //try to bind
     bind_to_socket(sockfd, host_address);
-
-    // check that we can listen to it to it
-    if(listen(sockfd, QUEUE_LIMIT)){
-      std::cerr << "Failed to listen to socket socket with errno " << errno << std::endl;
-      std::exit(EXIT_FAILURE);
-    }
+    listen_to_socket(sockfd);
     accept_loop(sockfd);
   }
 
@@ -73,6 +53,29 @@ namespace servsocks{
       if(inc_sockfd != -1){
         std::cout << "Got a request from..." << inc_sockfd << std::endl;
       }
+    }
+  }
+  struct sockaddr_in setup_host_socket(){
+    /* --from <netinet/in.h
+    struct sockaddr_in:   short   sin_family;
+                          u_short sin_port;
+                          struct  in_addr sin_addr;
+                          char    sin_zero[8];
+    */
+    struct sockaddr_in host_address;
+    host_address.sin_family = AF_INET;
+    host_address.sin_port = htons(PORT);
+    host_address.sin_addr.s_addr = inet_addr("127.0.0.1");
+    //since memset can be optimized away, we use memcpy to scrub the rest of the struct
+    char zero_out[8] = {0};
+    memcpy(&(host_address.sin_zero), &zero_out, 8);
+    return host_address;
+  }
+
+  void listen_to_socket(int host_sockfd) {
+    if(listen(host_sockfd, QUEUE_LIMIT)){
+      std::cerr << "Failed to listen to socket socket with errno " << errno << std::endl;
+      std::exit(EXIT_FAILURE);
     }
   }
 
