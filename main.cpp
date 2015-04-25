@@ -31,7 +31,7 @@
 #include <errno.h>
 #include <unistd.h>
 
-#include "reqchannel.h"
+#include "network_req_channel.h"
 #include "bounded_buffer.h"
 #include "client_task.h"
 #include "worker_task.h"
@@ -69,10 +69,11 @@ void print_usage();
 
 int main(int argc, char * argv[]) {
 
-  pid_t pid = fork();
-  if (pid <= 0) {
-      execv("data_server", argv);
-  }
+  //should no longer fork...
+  //pid_t pid = fork();
+  //if (pid <= 0) {
+  //execv("data_server", argv);
+  //}
 
   int n = 10000;
   int b = 100;
@@ -126,7 +127,7 @@ int main(int argc, char * argv[]) {
    * Do client-esque things
    */
 
-  RequestChannel chan("control", RequestChannel::CLIENT_SIDE);
+  NetworkRequestChannel chan("control", NetworkRequestChannel::CLIENT_SIDE, 0);
 
   std::shared_ptr<Bounded_buffer<Data>> buffer(new Bounded_buffer<Data>(b));
 

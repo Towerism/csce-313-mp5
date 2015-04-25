@@ -4,13 +4,13 @@
 #include <string>
 #include "runnable.h"
 #include "bounded_buffer.h"
-#include "reqchannel.h"
+#include "network_req_channel.h"
 #include "data.h"
 #include "buffer_filter.h"
 
 struct Worker_task : public Runnable {
   // inputs are request buffer and control request channel
-  Worker_task(Bounded_buffer<Data>* buf, Buffer_filter& out_bufs, RequestChannel& ctrl);
+  Worker_task(Bounded_buffer<Data>* buf, Buffer_filter& out_bufs, NetworkRequestChannel& ctrl);
   ~Worker_task() { }
 
   virtual void run() override;
@@ -19,7 +19,7 @@ struct Worker_task : public Runnable {
 private:
   Bounded_buffer<Data>* buffer;
   Buffer_filter& out_buffers;
-  RequestChannel* channel;
+  NetworkRequestChannel* channel;
   bool cancelled = false;
 };
 

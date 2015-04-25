@@ -31,8 +31,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include "reqchannel.h"
-#include "server.h"
+#include "network_req_channel.h"
+#include <server.hh>
 
 using namespace std;
 
@@ -53,12 +53,13 @@ using namespace std;
 /*--------------------------------------------------------------------------*/
 
 static int nthreads = 0;
+int SERVER_SOCKFD;
 
 /*--------------------------------------------------------------------------*/
 /* FORWARDS */
 /*--------------------------------------------------------------------------*/
 
-void handle_process_loop(RequestChannel & _channel);
+void handle_process_loop(NetworkRequestChannel & _channel);
 
 /*--------------------------------------------------------------------------*/
 /* LOCAL FUNCTIONS -- SUPPORT FUNCTIONS */
@@ -76,7 +77,7 @@ string int2string(int number) {
 
 void * handle_data_requests(void * args) {
 
-  RequestChannel * data_channel =  (RequestChannel*)args;
+  NetworkRequestChannel * data_channel =  (NetworkRequestChannel*)args;
 
   // -- Handle client requests on this channel.
 
@@ -91,17 +92,17 @@ void * handle_data_requests(void * args) {
 /* LOCAL FUNCTIONS -- INDIVIDUAL REQUESTS */
 /*--------------------------------------------------------------------------*/
 
-void process_hello(RequestChannel & _channel, const string & _request) {
+void process_hello(NetworkRequestChannel & _channel, const string & _request) {
   _channel.cwrite("hello to you too");
 }
 
-void process_data(RequestChannel & _channel, const string &  _request) {
+void process_data(NetworkRequestChannel & _channel, const string &  _request) {
   usleep(1000 + (rand() % 5000));
   //_channel.cwrite("here comes data about " + _request.substr(4) + ": " + int2string(random() % 100));
   _channel.cwrite(int2string(rand() % 100));
 }
 
-void process_newthread(RequestChannel & _channel, const string & _request) {
+void process_newthread(NetworkRequestChannel & _channel, const string & _request) {
   int error;
   nthreads ++;
 
@@ -116,7 +117,7 @@ void process_newthread(RequestChannel & _channel, const string & _request) {
 
   // -- Construct new data channel (pointer to be passed to thread function)
 
-  RequestChannel * data_channel = new RequestChannel(new_channel_name, RequestChannel::SERVER_SIDE);
+  NetworkRequestChannel * data_channel = new NetworkRequestChannel(new_channel_name, NetworkRequestChannel::SERVER_SIDE, SERVER_SOCKFD);
 
   // -- Create new thread to handle request channel
 
@@ -132,7 +133,7 @@ void process_newthread(RequestChannel & _channel, const string & _request) {
 /* LOCAL FUNCTIONS -- THE PROCESS REQUEST LOOP */
 /*--------------------------------------------------------------------------*/
 
-void process_request(RequestChannel & _channel, const string & _request) {
+void process_request(NetworkRequestChannel & _channel, const string & _request) {
 
   if (_request.compare(0, 5, "hello") == 0) {
     process_hello(_channel, _request);
@@ -149,7 +150,7 @@ void process_request(RequestChannel & _channel, const string & _request) {
 
 }
 
-void handle_process_loop(RequestChannel & _channel) {
+void handle_process_loop(NetworkRequestChannel & _channel) {
 
   for(;;) {
 
@@ -175,9 +176,9 @@ void handle_process_loop(RequestChannel & _channel) {
 
 int main(int argc, char * argv[]) {
 
-  servsocks::start_up_server();
+  SERVER_SOCKFD = servsocks::start_up_server();
   //  cout << "Establishing control channel... " << flush;
-  RequestChannel control_channel("control", RequestChannel::SERVER_SIDE);
+  NetworkRequestChannel control_channel("control", NetworkRequestChannel::SERVER_SIDE, SERVER_SOCKFD);
   //  cout << "done.\n" << flush;
 
   handle_process_loop(control_channel);
