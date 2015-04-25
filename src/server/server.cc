@@ -28,7 +28,7 @@ namespace servsocks{
 
     // check that we can listen to it to it
     if(listen(sockfd, QUEUE_LIMIT)){
-      std::cerr << "Failed to listen to socket socket with this: " << errno << std::endl;
+      std::cerr << "Failed to listen to socket socket with errno " << errno << std::endl;
       std::exit(EXIT_FAILURE);
     }
     accept_loop(sockfd);
@@ -38,10 +38,10 @@ namespace servsocks{
     int on = 1;
     int off = 1;
 
-    int status_of_set1 = setsockopt(host_sockfd, SOL_SOCKET, SO_DEBUG, &on, sizeof(on));
-    int status_of_set2 = setsockopt(host_sockfd, SOL_SOCKET, SO_ERROR, &on, sizeof(on));
-    if(status_of_set1 == -1 || status_of_set2 == -1){
-      std::cerr << "Setting options failed" << std::endl;
+    int status_of_set = setsockopt(host_sockfd, SOL_SOCKET, SO_DEBUG, &on, sizeof(on));
+    //int status_of_set2 = setsockopt(host_sockfd, SOL_SOCKET, SO_ERROR, &on, sizeof(on));
+    if(status_of_set == -1){
+      std::cerr << "Setting options failed with errno " << errno << std::endl;
       std::exit(EXIT_FAILURE);
     }
   }
@@ -59,7 +59,7 @@ namespace servsocks{
   void bind_to_socket(int host_sockfd, struct sockaddr_in &sa_i){
     int status_of_bind = bind(host_sockfd, (struct sockaddr *)&sa_i, sizeof(sa_i));
     if(status_of_bind == -1){
-      std::cerr << "Binding to socket failed with code " << errno << std::endl;
+      std::cerr << "Binding to socket failed with errno " << errno << std::endl;
       std::exit(EXIT_FAILURE);
     }
   }
