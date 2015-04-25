@@ -8,6 +8,7 @@ set(src_sources
     client_task.cpp
     worker_task.cpp
     buffer_filter.cpp
+    server.cc
 )
 add_library(src ${src_sources})
 
