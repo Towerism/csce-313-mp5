@@ -1,3 +1,4 @@
+#include <cstring>
 #include "network_req_channel.h"
 NetworkRequestChannel::NetworkRequestChannel(const std::string _name, const Side _side, int _sockfd): my_name(_name), my_side(_side), my_sockfd(_sockfd){
   //if(_side == SERVER_SIDE){

@@ -1,4 +1,5 @@
 #include <server.hh>
+#include <cstring>
 
 
 namespace servsocks{
