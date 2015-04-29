@@ -42,6 +42,7 @@
 #include "histo_world.h"
 #include "ascii-engine/world.h"
 #include "ascii-engine/engine.h"
+#include "client_socket.h"
 
 using namespace std;
 
@@ -123,11 +124,13 @@ int main(int argc, char * argv[]) {
     exit(1);
   }
 
+  const string server_hostname = "127.0.0.1";
+  const int port = 1024;
   /*
    * Do client-esque things
    */
 
-  NetworkRequestChannel chan("control", NetworkRequestChannel::CLIENT_SIDE, 0);
+  NetworkRequestChannel chan("control", NetworkRequestChannel::CLIENT_SIDE, server_hostname, port);
 
   std::shared_ptr<Bounded_buffer<Data>> buffer(new Bounded_buffer<Data>(b));
 
@@ -145,6 +148,7 @@ int main(int argc, char * argv[]) {
     client_threads.push_back(t);
   }
 
+  cout << "starting worker threads" << endl;
   /* create worker threads */
   Buffer_filter out_buffers(b, {"Joe Smith", "Jane Smith", "John Doe"}); // conglomerated data server responses
   vector<pthread_t> worker_threads;
