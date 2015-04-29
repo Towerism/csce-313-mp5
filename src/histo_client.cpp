@@ -5,7 +5,7 @@ void HistoClient::addData(int d){
     client_stats[d/10] += 1;
   }
   else{
-    std::cout << "Data is out of range... \n" << std::endl;
+    //std::cout << "Data is out of range... \n" << std::endl;
   }
 }
 int HistoClient::sumOfStats(){
@@ -16,10 +16,28 @@ int HistoClient::sumOfStats(){
   return sum;
 }
 
+inline bool is_integer(std::string & s);
+
 void HistoClient::run() {
   while(true){
     Data d = buffer.dequeue();
-    int x = std::stoi(d.data);
+    int x  = 0; //NOTE: if the total is incorrect, this is happening
+    if(is_integer(d.data)){
+        int x = std::stoi(d.data);
+    }
+    else{
+      //std::cout << "Data is not in the proper format. exhibit a: " << d.data << std::endl;
+    }
     addData(x);
   }
+}
+//from stackoverflow..a very common function
+inline bool is_integer(std::string & s)
+{
+   if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false ;
+
+   char * p ;
+   std::strtol(s.c_str(), &p, 10) ;
+
+   return (*p == 0) ;
 }
