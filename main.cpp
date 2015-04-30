@@ -135,8 +135,18 @@ int main(int argc, char * argv[]) {
   /*
    * Do client-esque things
    */
-
-  NetworkRequestChannel chan("control", NetworkRequestChannel::CLIENT_SIDE, server_hostname, port);
+  std::unique_ptr<NetworkRequestChannel> chan;
+  try {
+    using std::unique_ptr;
+    chan = unique_ptr<NetworkRequestChannel>(
+      new NetworkRequestChannel("control", NetworkRequestChannel::CLIENT_SIDE, server_hostname, port));
+  } catch (...) {
+    std::cerr << "Unable to connect to port " << port << std::endl;
+    if (port <= 1024) {
+      std::cerr << "Try elevating priveleges.\n";
+    }
+    return 1;
+  }
 
   std::shared_ptr<Bounded_buffer<Data>> buffer(new Bounded_buffer<Data>(b));
 
@@ -162,7 +172,7 @@ int main(int argc, char * argv[]) {
   std::vector<shared_ptr<Worker_task>> worker_tasks;
 
   for (int i = 0; i < w; ++i) {
-    worker_tasks.emplace_back(new Worker_task(buffer.get(), out_buffers, chan));
+    worker_tasks.emplace_back(new Worker_task(buffer.get(), out_buffers, *chan));
   }
   for (auto wt : worker_tasks) {
     pthread_t t;
@@ -207,7 +217,7 @@ int main(int argc, char * argv[]) {
     worker_tasks[i]->cancel();
   }
 
-  std::string quit_reply = chan.send_request("quit");
+  std::string quit_reply = chan->send_request("quit");
 }
 
 void print_usage() {
