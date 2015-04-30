@@ -44,7 +44,6 @@
 #include "ascii-engine/engine.h"
 #include "client_socket.h"
 
-using namespace std;
 
 /*--------------------------------------------------------------------------*/
 /* DATA STRUCTURES */
@@ -79,39 +78,46 @@ int main(int argc, char * argv[]) {
   int n = 10000;
   int b = 100;
   int w = 10;
+  std::string h = "127.0.0.1";
+  int p = 1024;
   int g = 5;
   bool x = true;
   int flags, opt, errflag = 0;
 
-  while ((opt = getopt(argc, argv, "xhn:b:w:g:")) != -1) {
+  while ((opt = getopt(argc, argv, "xHn:b:w:h:p:g:")) != -1) {
     switch (opt) {
-      case 'n':
-        n = atoi(optarg);
-        break;
-      case 'b':
-        b = atoi(optarg);
-        break;
-      case 'w':
-        w = atoi(optarg);
-        break;
-      case 'g':
-        g = atoi(optarg);
-        break;
-      case 'x':
-        x = false;
-        break;
-      case 'h':
-        print_usage();
-        return 0;
-      case ':':
-        if (optopt == '\0') { break; }
-        fprintf(stderr, "Option -%c requires an operand\n", optopt);
-        ++errflag;
-        break;
-      case '?':
-        fprintf(stderr, "Unrecognised option: -%c\n", optopt);
-        ++errflag;
-        break;
+    case 'n':
+      n = atoi(optarg);
+      break;
+    case 'b':
+      b = atoi(optarg);
+      break;
+    case 'w':
+      w = atoi(optarg);
+      break;
+    case 'h':
+      h = optarg;
+      break;
+    case 'p':
+      p = atoi(optarg);
+    case 'g':
+      g = atoi(optarg);
+      break;
+    case 'x':
+      x = false;
+      break;
+    case 'H':
+      print_usage();
+      return 0;
+    case ':':
+      if (optopt == '\0') { break; }
+      fprintf(stderr, "Option -%c requires an operand\n", optopt);
+      ++errflag;
+      break;
+    case '?':
+      fprintf(stderr, "Unrecognised option: -%c\n", optopt);
+      ++errflag;
+      break;
     }
   }
 
@@ -124,8 +130,8 @@ int main(int argc, char * argv[]) {
     exit(1);
   }
 
-  const string server_hostname = "127.0.0.1";
-  const int port = 1024;
+  const std::string server_hostname = h;
+  const int port = p;
   /*
    * Do client-esque things
    */
@@ -135,8 +141,9 @@ int main(int argc, char * argv[]) {
   std::shared_ptr<Bounded_buffer<Data>> buffer(new Bounded_buffer<Data>(b));
 
   /* create client threads */
-  vector<pthread_t> client_threads;
-  vector<shared_ptr<Client_task>> client_tasks;
+  using std::shared_ptr;
+  std::vector<pthread_t> client_threads;
+  std::vector<shared_ptr<Client_task>> client_tasks;
 
   client_tasks.emplace_back(new Client_task("Joe Smith", buffer.get(), n));
   client_tasks.emplace_back(new Client_task("Jane Smith", buffer.get(), n));
@@ -148,11 +155,11 @@ int main(int argc, char * argv[]) {
     client_threads.push_back(t);
   }
 
-  cout << "starting worker threads" << endl;
+  std::cout << "starting worker threads" << std::endl;
   /* create worker threads */
   Buffer_filter out_buffers(b, {"Joe Smith", "Jane Smith", "John Doe"}); // conglomerated data server responses
-  vector<pthread_t> worker_threads;
-  vector<shared_ptr<Worker_task>> worker_tasks;
+  std::vector<pthread_t> worker_threads;
+  std::vector<shared_ptr<Worker_task>> worker_tasks;
 
   for (int i = 0; i < w; ++i) {
     worker_tasks.emplace_back(new Worker_task(buffer.get(), out_buffers, chan));
@@ -165,8 +172,9 @@ int main(int argc, char * argv[]) {
 
   /* create histogram threads */
 
-  vector<pthread_t> histo_threads;
-  vector<std::shared_ptr<HistoClient>> histo_tasks;
+  using std::shared_ptr;
+  std::vector<pthread_t> histo_threads;
+  std::vector<std::shared_ptr<HistoClient>> histo_tasks;
 
   histo_tasks.emplace_back(new HistoClient("Joe Smith", *out_buffers.get("Joe Smith")));
   histo_tasks.emplace_back(new HistoClient("Jane Smith", *out_buffers.get("Jane Smith")));
@@ -199,14 +207,16 @@ int main(int argc, char * argv[]) {
     worker_tasks[i]->cancel();
   }
 
-  string quit_reply = chan.send_request("quit");
+  std::string quit_reply = chan.send_request("quit");
 }
 
 void print_usage() {
-  cout << "usage: ./mp4 [-n <num requests>]\n"
-          "             [-b <buffer limit>]\n"
-          "             [-w <num workthreads>]\n"
-          "             [-g <graphic updates/second>]\n"
-          "             [-x disables graphics]\n"
-          "             [-h shows this message]\n";
+  std::cout << "usage: ./client [-n <num requests>]\n"
+          "                     [-b <buffer limit>]\n"
+          "                     [-w <num workthreads>]\n"
+          "                     [-h <hostname>]\n"
+          "                     [-p <port>]\n"
+          "                     [-g <graphic updates/second>]\n"
+          "                     [-x disables graphics]\n"
+          "                     [-H shows this message]\n";
 }
