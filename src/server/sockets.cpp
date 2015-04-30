@@ -1,3 +1,4 @@
+#include <cstring>
 #include "sockets.h"
 #include "histo_client.h"
 
