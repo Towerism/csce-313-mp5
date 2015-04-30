@@ -4,7 +4,7 @@
 	clean
 
 BIN_DIR = bin
-MAKE = @make -C $(BIN_DIR)
+MAKE = @make -s -C $(BIN_DIR)
 CMAKE = @mkdir -p $(BIN_DIR) && cd $(BIN_DIR) && cmake
 
 CLIENT = client
