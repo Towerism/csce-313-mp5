@@ -39,10 +39,13 @@ generate-test:
 ###
 ### submodule recipes
 ###
-submodules: submodule-init submodule-update
+submodules: submodule-init submodule-sync submodule-update
 submodule-init:
 	@echo "-- Initializing submodules"
 	@git submodule init
+submodule-sync:
+	@echo "-- Syncing submodules"
+	@git submodule sync
 submodule-update:
 	@echo "-- Updating submodules"
 	@git submodule update
