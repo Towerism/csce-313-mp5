@@ -93,6 +93,7 @@ void * handle_data_requests(void * args) {
 /*--------------------------------------------------------------------------*/
 
 void process_hello(NetworkRequestChannel & _channel, const string & _request, int sockfd) {
+  std::cout << "recieved hello on socket: " << sockfd;
   _channel.cwrite("hello to you too");
 }
 
@@ -193,12 +194,6 @@ void *connection_handler(void * _channel)
   int read_size;
   //char * client_message[2000];
   char *message , client_message[2000];
-  //Send some messages to the client
-  //message = "Greetings! I am your connection handler\n";
-  //write(sock , message , strlen(message));
-  //
-  //message = "Now type something and i shall repeat what you type \n";
-  //write(sock , message , strlen(message));
 
   //Receive a message from client
   while( (read_size = recv(sock, client_message , 2000 , 0)) > 0 )
@@ -211,14 +206,15 @@ void *connection_handler(void * _channel)
         usleep(10000);          // give the other end a bit of time.
         break;                  // break out of the loop;
       }
-      //if(string(client_message) != "newthread")
-      //{
-      //cout << "it's matching to..." << client_message << "..."<< endl;
+      //char test_message[100] = "15\0";
+      //if(send(sock, test_message, strlen(test_message), 0) <= 0){
+      //cout << "send error" << std::endl;
+      //break;
       //}
-      //send(sock, client_message, 2000, 0);
       process_request(channel, string(client_message), sock);
     }
 
+  cout << "Closing connection_handler loop" << std::endl;
   if(read_size == 0)
     {
       puts("Client disconnected");

@@ -16,7 +16,8 @@ Worker_task::Worker_task(Bounded_buffer<Data>* buf, Buffer_filter& out_bufs, Net
 void Worker_task::run() {
     while (!cancelled) {
         Data d = buffer->dequeue();
-        std::string response = channel->send_request(d.data);
+        std::string response = channel->send_request("data");
+        //std::cout << "Response is: __" << response << "__ on socket: " << channel->get_sockfd() << std::endl;
         // make sure the response is a number before putting it in out_buffers
         if (is_number(response)) {
           out_buffers.push(Data(d.request_origin, response));

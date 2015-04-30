@@ -21,23 +21,7 @@ inline bool is_integer(std::string & s);
 void HistoClient::run() {
   while(true){
     Data d = buffer.dequeue();
-    int x  = 0; //NOTE: if the total is incorrect, this is happening
-    if(is_integer(d.data)){
-        int x = std::stoi(d.data);
-    }
-    else{
-      //std::cout << "Data is not in the proper format. exhibit a: " << d.data << std::endl;
-    }
+    int x = std::stoi(d.data);
     addData(x);
   }
-}
-//from stackoverflow..a very common function
-inline bool is_integer(std::string & s)
-{
-   if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false ;
-
-   char * p ;
-   std::strtol(s.c_str(), &p, 10) ;
-
-   return (*p == 0) ;
 }
