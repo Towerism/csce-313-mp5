@@ -19,9 +19,7 @@ NetworkRequestChannel::~NetworkRequestChannel(){
 
 std::string NetworkRequestChannel::send_request(std::string _request){
   cwrite(_request);
-  //std::cout << "send_request returned " << s << std::endl;
   std::string s = cread();
-  //std::cout << "Message still IS:::::" << s << std::endl;
   return s;
 }
 
@@ -35,10 +33,8 @@ std::string NetworkRequestChannel::cread(int sockfd){
 
   if (recv(sockfd, buf, MAX_MESSAGE, 0) <= 0) {
     perror(std::string("NetworkRequestChannel (" + my_name + "): Error reading from socket!\n").c_str());
-    //std::cout << "My sock_fd is: " << my_sockfd << " and errno: " << errno << std::endl;
     return "Failure...";
   }
-  //std::cout << "SENT message is: __" << buf << "__ on socket: " << get_sockfd() << std::endl;
   std::string s = std::string(buf);
   return s;
 }

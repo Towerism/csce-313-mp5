@@ -198,19 +198,11 @@ void *connection_handler(void * _channel)
   //Receive a message from client
   while( (read_size = recv(sock, client_message , 2000 , 0)) > 0 )
     {
-
-      //string request = channel->cread(new_sockfd);
-      //cout << "New request is " << client_message << endl;
       if (client_message == "quit") {
         channel.cwrite("bye", sock);
         usleep(10000);          // give the other end a bit of time.
         break;                  // break out of the loop;
       }
-      //char test_message[100] = "15\0";
-      //if(send(sock, test_message, strlen(test_message), 0) <= 0){
-      //cout << "send error" << std::endl;
-      //break;
-      //}
       process_request(channel, string(client_message), sock);
     }
 
