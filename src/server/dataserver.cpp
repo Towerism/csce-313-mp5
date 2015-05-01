@@ -179,18 +179,22 @@ void print_usage();
 int main(int argc, char * argv[]) {
   int p = 1024;
   int b = 128;
+  string h = "127.0.0.1";
 
   int opt;
   int errflag = 0;
-  while ((opt = getopt(argc, argv, "hp:b:")) != -1) {
+  while ((opt = getopt(argc, argv, "Hhp:b:")) != -1) {
     switch (opt) {
+    case 'h':
+      h = optarg;
+      break;
     case 'p':
       p = atoi(optarg);
       break;
     case 'b':
       b = atoi(optarg);
       break;
-    case 'h':
+    case 'H':
       print_usage();
       return 0;
     case ':':
@@ -225,9 +229,10 @@ int main(int argc, char * argv[]) {
 }
 
 void print_usage() {
-  std::cout << "usage: ./data_server [-p <port number for data server>]\n"
+  std::cout << "usage: ./data_server [-h <hostname>]\n"
+               "                     [-p <port number for data server>]\n"
                "                     [-b <backlog for server socks>]\n"
-               "                     [-h shows this message]\n";
+               "                     [-H shows this message]\n";
 }
 
 //from stackoverflow
