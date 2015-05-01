@@ -218,8 +218,8 @@ int main(int argc, char * argv[]) {
     exit(1);
   }
 
-
-  SERVER_SOCKFD = servsocks::start_up_server();
+  //h=hostname, p=port, b= queue_limit
+  SERVER_SOCKFD = servsocks::start_up_server(h, p, b);
   //  cout << "Establishing control channel... " << flush;
   NetworkRequestChannel *control_channel = new NetworkRequestChannel("control", NetworkRequestChannel::SERVER_SIDE, SERVER_SOCKFD);
   //  cout << "done.\n" << flush;

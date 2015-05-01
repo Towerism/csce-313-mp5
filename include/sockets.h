@@ -10,7 +10,7 @@
 
 namespace sockwrap{
   //wraps setsockopt()
-  void set_socket_options(int socket_file_descriptor, );
+  void set_socket_options(int socket_file_descriptor);
   //wraps socket() call
   int create_socket();
   //wraps bind() call
