@@ -45,8 +45,8 @@ namespace sockwrap{
     return -1;
   }
 
-  void listen_to_socket(int sockfd) {
-    int status = listen(sockfd, QUEUE_LIMIT);
+  void listen_to_socket(int sockfd, int queue_limit) {
+    int status = listen(sockfd, queue_limit);
     if(status == -1) {
       std::cerr << "Failed to listen to socket with errno " << errno << std::endl;
       std::exit(EXIT_FAILURE);
@@ -62,7 +62,7 @@ namespace sockwrap{
     }
   }
 
-  struct sockaddr_in setup_host_socket(std::string ip_address){
+  struct sockaddr_in setup_host_socket(std::string ip_address, int port){
     /* --from <netinet/in.h
        struct sockaddr_in:   short   sin_family;
        u_short sin_port;
@@ -72,14 +72,20 @@ namespace sockwrap{
     struct sockaddr_in host_address;
     host_address.sin_family = AF_INET;
     if(getuid() == 0){
-      host_address.sin_port = htons(PORT_SUPER);
+      host_address.sin_port = htons(port);
+    }
+    else if(port >= 1024){
+      host_address.sin_port = htons(port);
     }
     else{
-      host_address.sin_port = htons(PORT);
+      std::cerr << "Binding to ports < 1024 must be done as root.." << std::endl;
+      std::exit(EXIT_FAILURE);
     }
     host_address.sin_addr.s_addr = inet_addr(ip_address.c_str());
+
     //since memset can be optimized away, we use memcpy to scrub the rest of the struct
     char zero_out[8] = {0};
+
     memcpy(&(host_address.sin_zero), &zero_out, 8);
     return host_address;
   }
