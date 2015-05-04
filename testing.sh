@@ -13,9 +13,9 @@ echo "client array is ${CLIENT_ARRAY[*]}"
 echo "" > timing.log
 
 exectest () {
-echo "backlog $BACKLOG, $CLIENTS client(s):" >> timing.log
-(time ./client -p $PORT -w $CLIENTS -n $REQUESTS -x) 2>> timing.log
-echo "==================================" >> timing.log
+    echo "backlog $BACKLOG, $CLIENTS client(s):" >> timing.log
+    (time ./client -p $PORT -w $CLIENTS -n $REQUESTS -x) 2>> timing.log
+    echo "==================================" >> timing.log
 }
 
 
