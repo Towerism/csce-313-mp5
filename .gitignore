@@ -30,3 +30,4 @@ bin
 client
 data_server
 test_suite
+/timing.log

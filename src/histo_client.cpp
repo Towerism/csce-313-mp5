@@ -5,7 +5,7 @@ void HistoClient::addData(int d){
     client_stats[d/10] += 1;
   }
   else{
-    std::cout << "Data is out of range... \n" << std::endl;
+    //std::cout << "Data is out of range... \n" << std::endl;
   }
 }
 int HistoClient::sumOfStats(){
@@ -15,6 +15,8 @@ int HistoClient::sumOfStats(){
   }
   return sum;
 }
+
+inline bool is_integer(std::string & s);
 
 void HistoClient::run() {
   while(true){

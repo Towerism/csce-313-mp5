@@ -31,7 +31,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include "reqchannel.h"
+#include "network_req_channel.h"
+#include "server_socket.h"
 
 using namespace std;
 
@@ -52,12 +53,13 @@ using namespace std;
 /*--------------------------------------------------------------------------*/
 
 static int nthreads = 0;
+int SERVER_SOCKFD;
 
 /*--------------------------------------------------------------------------*/
 /* FORWARDS */
 /*--------------------------------------------------------------------------*/
 
-void handle_process_loop(RequestChannel & _channel);
+void handle_process_loop(NetworkRequestChannel * _channel);
 
 /*--------------------------------------------------------------------------*/
 /* LOCAL FUNCTIONS -- SUPPORT FUNCTIONS */
@@ -75,11 +77,11 @@ string int2string(int number) {
 
 void * handle_data_requests(void * args) {
 
-  RequestChannel * data_channel =  (RequestChannel*)args;
+  NetworkRequestChannel * data_channel =  (NetworkRequestChannel*)args;
 
   // -- Handle client requests on this channel.
 
-  handle_process_loop(*data_channel);
+  handle_process_loop(data_channel);
 
   // -- Client has quit. We remove channel.
 
@@ -90,32 +92,33 @@ void * handle_data_requests(void * args) {
 /* LOCAL FUNCTIONS -- INDIVIDUAL REQUESTS */
 /*--------------------------------------------------------------------------*/
 
-void process_hello(RequestChannel & _channel, const string & _request) {
+void process_hello(NetworkRequestChannel & _channel, const string & _request, int sockfd) {
+  std::cout << "recieved hello on socket: " << sockfd;
   _channel.cwrite("hello to you too");
 }
 
-void process_data(RequestChannel & _channel, const string &  _request) {
+void process_data(NetworkRequestChannel & _channel, const string &  _request, int sockfd) {
   usleep(1000 + (rand() % 5000));
   //_channel.cwrite("here comes data about " + _request.substr(4) + ": " + int2string(random() % 100));
-  _channel.cwrite(int2string(rand() % 100));
+  _channel.cwrite(int2string(rand() % 100), sockfd);
 }
 
-void process_newthread(RequestChannel & _channel, const string & _request) {
+void process_newthread(NetworkRequestChannel & _channel, const string & _request, int sockfd) {
   int error;
   nthreads ++;
 
   // -- Name new data channel
 
   string new_channel_name = "data" + int2string(nthreads) + "_";
-  //  cout << "new channel name = " << new_channel_name << endl;
+  //cout << "new channel name = " << new_channel_name << endl;
 
   // -- Pass new channel name back to client
 
-  _channel.cwrite(new_channel_name);
+  _channel.cwrite(new_channel_name, sockfd);
 
   // -- Construct new data channel (pointer to be passed to thread function)
 
-  RequestChannel * data_channel = new RequestChannel(new_channel_name, RequestChannel::SERVER_SIDE);
+  NetworkRequestChannel * data_channel = new NetworkRequestChannel(new_channel_name, NetworkRequestChannel::SERVER_SIDE, _channel.get_sockfd());
 
   // -- Create new thread to handle request channel
 
@@ -131,54 +134,138 @@ void process_newthread(RequestChannel & _channel, const string & _request) {
 /* LOCAL FUNCTIONS -- THE PROCESS REQUEST LOOP */
 /*--------------------------------------------------------------------------*/
 
-void process_request(RequestChannel & _channel, const string & _request) {
+void process_request(NetworkRequestChannel & _channel, const string & _request, int sockfd) {
 
   if (_request.compare(0, 5, "hello") == 0) {
-    process_hello(_channel, _request);
+    process_hello(_channel, _request, sockfd);
   }
   else if (_request.compare(0, 4, "data") == 0) {
-    process_data(_channel, _request);
+    process_data(_channel, _request, sockfd);
   }
   else if (_request.compare(0, 9, "newthread") == 0) {
-    process_newthread(_channel, _request);
+    process_newthread(_channel, _request, sockfd);
   }
   else {
-    _channel.cwrite("unknown request");
+    _channel.cwrite("unknown request", sockfd);
   }
 
 }
 
-void handle_process_loop(RequestChannel & _channel) {
+void *connection_handler(void *socket_desc);
+void handle_process_loop(NetworkRequestChannel * _channel) {
 
-  for(;;) {
-
-    //cout << "Reading next request from channel (" << _channel.name() << ") ..." << flush;
-    string request = _channel.cread();
-    //cout << " done (" << _channel.name() << ")." << endl;
-    //cout << "New request is " << request << endl;
-
-    if (request.compare("quit") == 0) {
-      _channel.cwrite("bye");
-      //usleep(10000);          // give the other end a bit of time.
-      break;                  // break out of the loop;
+  int client_sock, c;
+  struct sockaddr_in client;
+  //cout << "Reading next request from channel (" << _channel.name() << ") ..." << flush;
+	pthread_t thread_id;
+  //int new_sockfd = sockwrap::accept_connection(_channel->get_sockfd());
+  while( (client_sock = accept(_channel->get_sockfd(), (struct sockaddr *)&client, (socklen_t*)&c)) ) {
+    if(client_sock >= 0){
+      NetworkRequestChannel * new_channel = new NetworkRequestChannel(_channel->get_name(), _channel->get_side(), client_sock);
+      if( pthread_create( &thread_id , NULL ,  connection_handler , (void*) new_channel) < 0)
+        {
+          perror("could not create thread");
+        }
     }
-
-    process_request(_channel, request);
   }
 
 }
-
 /*--------------------------------------------------------------------------*/
 /* MAIN FUNCTION */
 /*--------------------------------------------------------------------------*/
 
-int main(int argc, char * argv[]) {
+void print_usage();
 
+int main(int argc, char * argv[]) {
+  int p = 1024;
+  int b = 128;
+  string h = "127.0.0.1";
+
+  int opt;
+  int errflag = 0;
+  while ((opt = getopt(argc, argv, "Hhp:b:")) != -1) {
+    switch (opt) {
+    case 'h':
+      h = optarg;
+      break;
+    case 'p':
+      p = atoi(optarg);
+      break;
+    case 'b':
+      b = atoi(optarg);
+      break;
+    case 'H':
+      print_usage();
+      return 0;
+    case ':':
+      if (optopt == '\0') { break; }
+      fprintf(stderr, "Option -%c requires an operand\n", optopt);
+      ++errflag;
+      break;
+    case '?':
+      fprintf(stderr, "Unrecognised option: -%c\n", optopt);
+      ++errflag;
+      break;
+    }
+  }
+
+  if (errflag) {
+    print_usage();
+    exit(1);
+  }
+  if (p <= 0 || b <= 0) {
+    fprintf(stderr, "Arguments must be positive\n");
+    exit(1);
+  }
+
+  //h=hostname, p=port, b= queue_limit
+  SERVER_SOCKFD = servsocks::start_up_server(h, p, b);
   //  cout << "Establishing control channel... " << flush;
-  RequestChannel control_channel("control", RequestChannel::SERVER_SIDE);
+  NetworkRequestChannel *control_channel = new NetworkRequestChannel("control", NetworkRequestChannel::SERVER_SIDE, SERVER_SOCKFD);
   //  cout << "done.\n" << flush;
 
   handle_process_loop(control_channel);
 
 }
 
+void print_usage() {
+  std::cout << "usage: ./data_server [-h <hostname>]\n"
+               "                     [-p <port number for data server>]\n"
+               "                     [-b <backlog for server socks>]\n"
+               "                     [-H shows this message]\n";
+}
+
+//from stackoverflow
+void *connection_handler(void * _channel)
+{
+  //Get the socket descriptor
+  NetworkRequestChannel channel = *(NetworkRequestChannel *)_channel;
+  int sock = channel.get_sockfd();
+  int read_size;
+  //char * client_message[2000];
+  char *message , client_message[2000];
+
+  //Receive a message from client
+  while( (read_size = recv(sock, client_message , 2000 , 0)) > 0 )
+    {
+      if (client_message == "quit") {
+        channel.cwrite("bye", sock);
+        usleep(10000);          // give the other end a bit of time.
+        break;                  // break out of the loop;
+      }
+      process_request(channel, string(client_message), sock);
+    }
+
+  cout << "Closing connection_handler loop" << std::endl;
+  if(read_size == 0)
+    {
+      puts("Client disconnected");
+      fflush(stdout);
+    }
+  else if(read_size == -1)
+    {
+      perror("recv failed");
+    }
+
+  return 0;
+}
